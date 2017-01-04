@@ -13,7 +13,35 @@ namespace Othello
         private Player[] players;
         private int[,] board;
         private const int BOARDSIZE = 8;
-
+        #region properties
+        public int WhiteScore {
+            get
+            {
+                return players[0].Score;
+            }
+        }
+        public int WhiteTime
+        {
+            get
+            {
+                return players[0].Time;
+            }
+        }
+        public int BlackScore
+        {
+            get
+            {
+                return players[1].Score;
+            }
+        }
+        public int BlackTime
+        {
+            get
+            {
+                return players[1].Time;
+            }
+        }
+        #endregion
         public Game()
         {
             players = new Player[2];
