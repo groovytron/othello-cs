@@ -22,6 +22,7 @@ namespace Othello
     public partial class MainWindow : Window
     {
         private Game game;
+        private int squareSize;
         public MainWindow()
         {
             InitializeComponent();
@@ -30,6 +31,8 @@ namespace Othello
             saveButton.Click += new RoutedEventHandler(SaveButtonClick);
             loadButton.Click += new RoutedEventHandler(LoadButtonClick);
             pauseButton.Click += new RoutedEventHandler(PauseButtonClick);
+            boardCanvas.MouseLeftButtonDown += new MouseButtonEventHandler(AddPawn);
+            this.squareSize = 60;
         }
         #region event handlers
         private void NewGameButtonClick(object sender, RoutedEventArgs e)
@@ -79,6 +82,14 @@ namespace Othello
         {
             throw new NotImplementedException();
         }
+
+        private void AddPawn(object sender, MouseButtonEventArgs e)
+        {
+            Point pos = e.GetPosition(boardCanvas);
+            int x = (int) pos.X / this.squareSize;
+            int y = (int) pos.Y / this.squareSize;
+            Console.WriteLine($"Trying to add a pawn at square {x}, {y}");
+        }
         #endregion
         /// <summary>
         /// Reset the game.
@@ -101,7 +112,7 @@ namespace Othello
             this.boardCanvas.Width = min;
             this.boardCanvas.Height = min;
 
-            int size = min / 8;
+            this.squareSize = min / 8;
 
             for(int i = 0; i < 8; i++)
             {
@@ -109,36 +120,36 @@ namespace Othello
                 {
                     brush.Color = Color.FromRgb(0, 128, 0);
                     Rectangle rectangle = new Rectangle();
-                    rectangle.Width = size;
-                    rectangle.Height = size;
+                    rectangle.Width = this.squareSize;
+                    rectangle.Height = this.squareSize;
                     rectangle.Fill = brush;
                     rectangle.Stroke = Brushes.Black;
                     this.boardCanvas.Children.Add(rectangle);
-                    Canvas.SetTop(rectangle, j * size);
-                    Canvas.SetLeft(rectangle, i * size);
+                    Canvas.SetTop(rectangle, j * this.squareSize);
+                    Canvas.SetLeft(rectangle, i * this.squareSize);
                     if (gameBoard[i, j] == 0)
                     {
                         brush.Color = Color.FromRgb(255, 255, 255);
                         Ellipse circle = new Ellipse();
-                        circle.Width = size;
-                        circle.Height = size;
+                        circle.Width = this.squareSize;
+                        circle.Height = this.squareSize;
                         circle.Fill = brush;
                         circle.Stroke = Brushes.Black;
                         this.boardCanvas.Children.Add(circle);
-                        Canvas.SetTop(circle, j * size);
-                        Canvas.SetLeft(circle, i * size);
+                        Canvas.SetTop(circle, j * this.squareSize);
+                        Canvas.SetLeft(circle, i * this.squareSize);
                     }
                     if (gameBoard[i, j] == 1)
                     {
                         brush.Color = Color.FromRgb(0, 0, 0);
                         Ellipse circle = new Ellipse();
-                        circle.Width = size;
-                        circle.Height = size;
+                        circle.Width = this.squareSize;
+                        circle.Height = this.squareSize;
                         circle.Fill = brush;
                         circle.Stroke = Brushes.White;
                         this.boardCanvas.Children.Add(circle);
-                        Canvas.SetTop(circle, j * size);
-                        Canvas.SetLeft(circle, i * size);
+                        Canvas.SetTop(circle, j * this.squareSize);
+                        Canvas.SetLeft(circle, i * this.squareSize);
                     }
                 }
             }
