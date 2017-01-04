@@ -20,10 +20,11 @@ namespace Othello
     /// </summary>
     public partial class MainWindow : Window
     {
+        private Game game;
         public MainWindow()
         {
             InitializeComponent();
-            new Game();
+            game = new Game();
             DrawBoard();
         }
 
@@ -32,12 +33,13 @@ namespace Othello
         /// </summary>
         private void DrawBoard()
         {
-            int min = (int) Math.Min(board.Width, board.Height);
+            int[,] gameBoard = game.Board;
+            int min = (int) Math.Min(boardCanvas.Width, boardCanvas.Height);
             SolidColorBrush brush = new SolidColorBrush();
 
             brush.Color = Color.FromRgb(0, 128, 0);
-            board.Width = min;
-            board.Height = min;
+            boardCanvas.Width = min;
+            boardCanvas.Height = min;
 
             int size = min / 8;
 
@@ -45,15 +47,39 @@ namespace Othello
             {
                 for(int j = 0; j < 8; j++)
                 {
+                    brush.Color = Color.FromRgb(0, 128, 0);
                     Rectangle rectangle = new Rectangle();
                     rectangle.Width = size;
                     rectangle.Height = size;
                     rectangle.Fill = brush;
                     rectangle.Stroke = Brushes.Black;
-                    board.Children.Add(rectangle);
-                    System.Console.WriteLine($"Rectangle {i}, {j} placé");
+                    boardCanvas.Children.Add(rectangle);
                     Canvas.SetTop(rectangle, j * size);
                     Canvas.SetLeft(rectangle, i * size);
+                    if (gameBoard[i, j] == 0)
+                    {
+                        brush.Color = Color.FromRgb(255, 255, 255);
+                        Ellipse circle = new Ellipse();
+                        circle.Width = size;
+                        circle.Height = size;
+                        circle.Fill = brush;
+                        circle.Stroke = Brushes.Black;
+                        boardCanvas.Children.Add(circle);
+                        Canvas.SetTop(circle, j * size);
+                        Canvas.SetLeft(circle, i * size);
+                    }
+                    if (gameBoard[i, j] == 1)
+                    {
+                        brush.Color = Color.FromRgb(0, 0, 0);
+                        Ellipse circle = new Ellipse();
+                        circle.Width = size;
+                        circle.Height = size;
+                        circle.Fill = brush;
+                        circle.Stroke = Brushes.White;
+                        boardCanvas.Children.Add(circle);
+                        Canvas.SetTop(circle, j * size);
+                        Canvas.SetLeft(circle, i * size);
+                    }
                 }
             }
         }

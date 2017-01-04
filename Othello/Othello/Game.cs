@@ -38,6 +38,10 @@ namespace Othello
                 return players["black"].Time;
             }
         }
+        public int [,] Board
+        {
+            get { return this.board; }
+        }
         #endregion
         private Dictionary<string, Player> players;
         private int[,] board;

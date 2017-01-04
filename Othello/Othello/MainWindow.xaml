@@ -59,7 +59,7 @@
             <Label Content="{Binding Source={StaticResource Game}, Path=BlackTime}"
                    ContentStringFormat="Black Time: {0}"/>
         </StackPanel>
-        <Canvas x:Name="board" Grid.Row="1" Grid.Column="1" Width="480" Height="480" />
+        <Canvas x:Name="boardCanvas" Grid.Row="1" Grid.Column="1" Width="480" Height="480" />
         <StackPanel
             Grid.Column="2"
             Grid.Row="1"
