@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using OthelloConsole;
+using Newtonsoft.Json.Linq;
+using System.IO;
 
 namespace Othello
 {
@@ -30,10 +32,7 @@ namespace Othello
                     board[i,j] = -1;
                 }
             }
-            showBoard();
-            showPlayerStatus();
-
-            newGame();
+          
         }
 
         private void showBoard()
@@ -59,11 +58,60 @@ namespace Othello
 
         public void save()
         {
+            JObject o = new JObject
+            {
+                {
+                    "Players" , new JObject
+                    {
+                        {
+                            "white", new JObject
+                            {
+                                {"score", players["white"].Score },
+                                {"time" , players["white"].Time }
+                            }
+                        }
+                            ,
+                        {
 
+                            "black", new JObject
+                            {
+                                {"score", players["black"].Score },
+                                {"time" , players["black"].Time }
+                            }
+                        }
+                    }
+                    },
+                {
+                    "Board" , new JArray(board)
+                }
+            };
+
+            File.WriteAllText("partie.json", o.ToString());
         }
 
         public void load()
         {
+            JObject o = JObject.Parse(File.ReadAllText("partie.json"));
+
+            var a = (JObject)o["Players"];
+
+            players["white"].Score = (int)a["white"]["score"];
+            players["white"].Time = (int)a["white"]["time"];
+
+            players["black"].Score = (int)a["black"]["score"];
+            players["black"].Time = (int)a["black"]["time"];
+
+
+            var b = o["Board"].ToObject<int[]>();
+
+            var h = 0;
+            for (int i = 0; i < BOARDSIZE; i++)
+            {
+                for (int j = 0; j < BOARDSIZE; j++)
+                {
+                    board[i, j] = b[h++];
+                }
+            }
 
         }
 
