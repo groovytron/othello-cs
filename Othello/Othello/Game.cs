@@ -10,15 +10,18 @@ namespace Othello
     class Game : IPlayable
     {
 
-        private Player[] players;
+        private Dictionary<string, Player> players;
         private int[,] board;
         private const int BOARDSIZE = 8;
+        private bool isWhiteTurn;
+        //private int time;
+
 
         public Game()
         {
-            players = new Player[2];
-            players[0] = new Player(true);
-            players[1] = new Player(false);
+            players = new Dictionary<string, Player>();
+            players.Add("white",new Player());
+            players.Add("black", new Player());
             board = new int[BOARDSIZE, BOARDSIZE];
             for (int i = 0; i < BOARDSIZE; i++)
             {
@@ -29,6 +32,8 @@ namespace Othello
             }
             showBoard();
             showPlayerStatus();
+
+            newGame();
         }
 
         private void showBoard()
@@ -38,7 +43,7 @@ namespace Othello
                 Console.WriteLine();
                 for (int j = 0; j < BOARDSIZE; j++)
                 {
-                    Console.Write(board[i,j]);
+                    Console.Write($"\t{board[i,j]}");
                 }
             }
             Console.WriteLine();
@@ -46,9 +51,9 @@ namespace Othello
 
         private void showPlayerStatus()
         {
-            for (int j = 0; j < players.Length; j++)
+            foreach (var player in players)
             {
-                Console.Write(players[j]);
+                Console.WriteLine(player.Value);
             }
         }
 
@@ -64,6 +69,28 @@ namespace Othello
 
         public void newGame()
         {
+            foreach (var player in players)
+            {
+                player.Value.reset();
+            }
+
+            playMove(3, 3, true);
+            playMove(4, 4, true);
+            playMove(4, 3, false);
+            playMove(3, 4, false);
+
+            isWhiteTurn = false;
+
+            foreach (var player in players)
+            {
+                player.Value.Score = 2;
+                //player.Value.Time = 1800000;
+            }
+
+            ///time = DateTime.Now.Millisecond;
+
+            showBoard();
+            showPlayerStatus();
 
         }
 
@@ -94,7 +121,15 @@ namespace Othello
 
         public bool playMove(int column, int line, bool isWhite)
         {
-            throw new NotImplementedException();
+            if (isWhite)
+            {
+                board[line, column] = 0;
+            }
+            else
+            {
+                board[line, column] = 1;
+            }
+            return true;
         }
     }
 }

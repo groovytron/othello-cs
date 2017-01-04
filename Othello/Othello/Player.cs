@@ -10,21 +10,24 @@ namespace Othello
     {
         private int time;
         private int score;
-        private bool isWhite;
 
-        public Player(bool isWhite)
+        public Player()
         {
             time = 0;
             score = 0;
-            this.IsWhite = isWhite;
         }
 
         public override string ToString() {
             StringBuilder sb = new StringBuilder();
-            sb.Append("\nColor Player : " + (isWhite == true ? "white" : "black"));
             sb.Append($"\nRemaining Time : {time}");
             sb.Append($"\nScore : {score}\n");
             return sb.ToString();
+        }
+
+        public void reset()
+        {
+            time = 0;
+            score = 0;
         }
 
         public int Time
@@ -50,19 +53,6 @@ namespace Othello
             set
             {
                 score = value;
-            }
-        }
-
-        public bool IsWhite
-        {
-            get
-            {
-                return isWhite;
-            }
-
-            set
-            {
-                isWhite = value;
             }
         }
     }
