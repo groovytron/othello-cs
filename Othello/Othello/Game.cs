@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OthelloConsole;
 
-namespace OthelloConsole
+namespace Othello
 {
     class Game : IPlayable
     {
@@ -15,7 +16,19 @@ namespace OthelloConsole
 
         public Game()
         {
+            players = new Player[2];
+            players[0] = new Player(true);
+            players[1] = new Player(false);
+            board = new int[8, 8];
+            for (int i = 0; i < board.Length; i++)
+            {
+                for (int j = 0; j < board.Length; j++)
+                {
+                    board[i,j] = -1;
+                }
+            }
 
+            
         }
 
         public void save()

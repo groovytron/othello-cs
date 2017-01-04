@@ -4,16 +4,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OthelloConsole
+namespace Othello
 {
     class Player
     {
         private int time;
         private int score;
+        private bool isWhite;
 
-        public Player()
+        public Player(bool isWhite)
         {
-            
+            time = 0;
+            score = 0;
+            this.IsWhite = isWhite;
         }
 
         public int Time
@@ -42,5 +45,17 @@ namespace OthelloConsole
             }
         }
 
+        public bool IsWhite
+        {
+            get
+            {
+                return isWhite;
+            }
+
+            set
+            {
+                isWhite = value;
+            }
+        }
     }
 }

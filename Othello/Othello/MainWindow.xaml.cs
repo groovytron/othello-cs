@@ -23,6 +23,7 @@ namespace Othello
         public MainWindow()
         {
             InitializeComponent();
+            new Game();
         }
     }
 }
