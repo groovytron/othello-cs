@@ -11,14 +11,59 @@ namespace Othello
 {
     class Game : IPlayable
     {
-
+        #region properties
+        public int WhiteScore
+        {
+            get
+            {
+                return players["white"].Score;
+            }
+        }
+        public int WhiteTime
+        {
+            get
+            {
+                return players["white"].Time;
+            }
+        }
+        public int BlackScore
+        {
+            get
+            {
+                return players["black"].Score;
+            }
+        }
+        public int BlackTime
+        {
+            get
+            {
+                return players["black"].Time;
+            }
+        }
+        public int [,] Board
+        {
+            get { return this.board; }
+        }
+        public string CurrentPlayerName
+        {
+            get
+            {
+                if (isWhiteTurn)
+                {
+                    return "White";
+                }
+                else
+                {
+                    return "Black";
+                }
+            }
+        }
+        #endregion
         private Dictionary<string, Player> players;
         private int[,] board;
         private const int BOARDSIZE = 8;
         private bool isWhiteTurn;
         //private int time;
-
-
         public Game()
         {
             players = new Dictionary<string, Player>();

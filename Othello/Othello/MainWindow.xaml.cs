@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,40 +21,136 @@ namespace Othello
     /// </summary>
     public partial class MainWindow : Window
     {
+        private Game game;
+        private int squareSize;
         public MainWindow()
         {
             InitializeComponent();
-            new Game();
-            DrawBoard();
+            NewGame();
+            newGameButton.Click += new RoutedEventHandler(NewGameButtonClick);
+            saveButton.Click += new RoutedEventHandler(SaveButtonClick);
+            loadButton.Click += new RoutedEventHandler(LoadButtonClick);
+            pauseButton.Click += new RoutedEventHandler(PauseButtonClick);
+            boardCanvas.MouseLeftButtonDown += new MouseButtonEventHandler(AddPawn);
+            this.squareSize = 60;
+        }
+        #region event handlers
+        private void NewGameButtonClick(object sender, RoutedEventArgs e)
+        {
+            MessageBoxResult result = MessageBox.Show("Êtes vous sûr de vouloir lancer une nouvelle partie?", "Nouvelle partie", MessageBoxButton.OKCancel, MessageBoxImage.Question);
+            if (result == MessageBoxResult.Yes)
+            {
+                NewGame();
+            }
         }
 
+        private void SaveButtonClick(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Title = "Sauver une partie";
+            openFileDialog.FileName = "game";
+            openFileDialog.DefaultExt = ".json";
+            openFileDialog.Filter = "Text documents (.json)|*.json";
+
+            Nullable<bool> result = openFileDialog.ShowDialog();
+
+            if (result == true)
+            {
+                string filename = openFileDialog.FileName;
+                throw new NotImplementedException();
+            }
+        }
+
+        private void LoadButtonClick(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Title = "Charger une partie";
+            openFileDialog.FileName = "game";
+            openFileDialog.DefaultExt = ".json";
+            openFileDialog.Filter = "Text documents (.json)|*.json";
+
+            Nullable<bool> result = openFileDialog.ShowDialog();
+
+            if (result == true)
+            {
+                string filename = openFileDialog.FileName;
+                throw new NotImplementedException();
+            }
+        }
+
+        private void PauseButtonClick(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void AddPawn(object sender, MouseButtonEventArgs e)
+        {
+            Point pos = e.GetPosition(boardCanvas);
+            int x = (int) pos.X / this.squareSize;
+            int y = (int) pos.Y / this.squareSize;
+            Console.WriteLine($"Trying to add a pawn at square {x}, {y}");
+        }
+        #endregion
+        /// <summary>
+        /// Reset the game.
+        /// </summary>
+        private void NewGame()
+        {
+            this.game = new Game();
+            DrawBoard();
+        }
         /// <summary>
         /// Draws the board in the window's canvas.
         /// </summary>
         private void DrawBoard()
         {
-            int min = (int) Math.Min(board.Width, board.Height);
+            int[,] gameBoard = this.game.Board;
+            int min = (int) Math.Min(this.boardCanvas.Width, this.boardCanvas.Height);
             SolidColorBrush brush = new SolidColorBrush();
 
             brush.Color = Color.FromRgb(0, 128, 0);
-            board.Width = min;
-            board.Height = min;
+            this.boardCanvas.Width = min;
+            this.boardCanvas.Height = min;
 
-            int size = min / 8;
+            this.squareSize = min / 8;
 
             for(int i = 0; i < 8; i++)
             {
                 for(int j = 0; j < 8; j++)
                 {
+                    brush.Color = Color.FromRgb(0, 128, 0);
                     Rectangle rectangle = new Rectangle();
-                    rectangle.Width = size;
-                    rectangle.Height = size;
+                    rectangle.Width = this.squareSize;
+                    rectangle.Height = this.squareSize;
                     rectangle.Fill = brush;
                     rectangle.Stroke = Brushes.Black;
-                    board.Children.Add(rectangle);
-                    System.Console.WriteLine($"Rectangle {i}, {j} placé");
-                    Canvas.SetTop(rectangle, j * size);
-                    Canvas.SetLeft(rectangle, i * size);
+                    this.boardCanvas.Children.Add(rectangle);
+                    Canvas.SetTop(rectangle, j * this.squareSize);
+                    Canvas.SetLeft(rectangle, i * this.squareSize);
+                    if (gameBoard[i, j] == 0)
+                    {
+                        brush.Color = Color.FromRgb(255, 255, 255);
+                        Ellipse circle = new Ellipse();
+                        circle.Width = this.squareSize;
+                        circle.Height = this.squareSize;
+                        circle.Fill = brush;
+                        circle.Stroke = Brushes.Black;
+                        this.boardCanvas.Children.Add(circle);
+                        Canvas.SetTop(circle, j * this.squareSize);
+                        Canvas.SetLeft(circle, i * this.squareSize);
+                    }
+                    if (gameBoard[i, j] == 1)
+                    {
+                        brush.Color = Color.FromRgb(0, 0, 0);
+                        Ellipse circle = new Ellipse();
+                        circle.Width = this.squareSize;
+                        circle.Height = this.squareSize;
+                        circle.Fill = brush;
+                        circle.Stroke = Brushes.White;
+                        this.boardCanvas.Children.Add(circle);
+                        Canvas.SetTop(circle, j * this.squareSize);
+                        Canvas.SetLeft(circle, i * this.squareSize);
+                    }
                 }
             }
         }
