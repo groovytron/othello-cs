@@ -12,23 +12,34 @@ namespace Othello
 
         private Player[] players;
         private int[,] board;
-
+        private const int BOARDSIZE = 8;
 
         public Game()
         {
             players = new Player[2];
             players[0] = new Player(true);
             players[1] = new Player(false);
-            board = new int[8, 8];
-            for (int i = 0; i < board.Length; i++)
+            board = new int[BOARDSIZE, BOARDSIZE];
+            for (int i = 0; i < BOARDSIZE; i++)
             {
-                for (int j = 0; j < board.Length; j++)
+                for (int j = 0; j < BOARDSIZE; j++)
                 {
                     board[i,j] = -1;
                 }
             }
+            showBoard();
+        }
 
-            
+        private void showBoard()
+        {
+            for (int i = 0; i < BOARDSIZE; i++)
+            {
+                Console.WriteLine();
+                for (int j = 0; j < BOARDSIZE; j++)
+                {
+                    Console.Write(board[i,j]);
+                }
+            }
         }
 
         public void save()
