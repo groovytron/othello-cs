@@ -19,6 +19,14 @@ namespace Othello
             this.IsWhite = isWhite;
         }
 
+        public override string ToString() {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("\nColor Player : " + (isWhite == true ? "white" : "black"));
+            sb.Append($"\nRemaining Time : {time}");
+            sb.Append($"\nScore : {score}\n");
+            return sb.ToString();
+        }
+
         public int Time
         {
             get

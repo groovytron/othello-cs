@@ -28,6 +28,7 @@ namespace Othello
                 }
             }
             showBoard();
+            showPlayerStatus();
         }
 
         private void showBoard()
@@ -39,6 +40,15 @@ namespace Othello
                 {
                     Console.Write(board[i,j]);
                 }
+            }
+            Console.WriteLine();
+        }
+
+        private void showPlayerStatus()
+        {
+            for (int j = 0; j < players.Length; j++)
+            {
+                Console.Write(players[j]);
             }
         }
 
