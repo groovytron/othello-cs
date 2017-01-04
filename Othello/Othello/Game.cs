@@ -42,6 +42,20 @@ namespace Othello
         {
             get { return this.board; }
         }
+        public string CurrentPlayerName
+        {
+            get
+            {
+                if (isWhiteTurn)
+                {
+                    return "White";
+                }
+                else
+                {
+                    return "Black";
+                }
+            }
+        }
         #endregion
         private Dictionary<string, Player> players;
         private int[,] board;

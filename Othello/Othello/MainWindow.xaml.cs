@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,22 +25,81 @@ namespace Othello
         public MainWindow()
         {
             InitializeComponent();
-            game = new Game();
-            DrawBoard();
+            NewGame();
+            newGameButton.Click += new RoutedEventHandler(NewGameButtonClick);
+            saveButton.Click += new RoutedEventHandler(SaveButtonClick);
+            loadButton.Click += new RoutedEventHandler(LoadButtonClick);
+            pauseButton.Click += new RoutedEventHandler(PauseButtonClick);
+        }
+        #region event handlers
+        private void NewGameButtonClick(object sender, RoutedEventArgs e)
+        {
+            MessageBoxResult result = MessageBox.Show("Êtes vous sûr de vouloir lancer une nouvelle partie?", "Nouvelle partie", MessageBoxButton.OKCancel, MessageBoxImage.Question);
+            if (result == MessageBoxResult.Yes)
+            {
+                NewGame();
+            }
         }
 
+        private void SaveButtonClick(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Title = "Sauver une partie";
+            openFileDialog.FileName = "game";
+            openFileDialog.DefaultExt = ".json";
+            openFileDialog.Filter = "Text documents (.json)|*.json";
+
+            Nullable<bool> result = openFileDialog.ShowDialog();
+
+            if (result == true)
+            {
+                string filename = openFileDialog.FileName;
+                throw new NotImplementedException();
+            }
+        }
+
+        private void LoadButtonClick(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Title = "Charger une partie";
+            openFileDialog.FileName = "game";
+            openFileDialog.DefaultExt = ".json";
+            openFileDialog.Filter = "Text documents (.json)|*.json";
+
+            Nullable<bool> result = openFileDialog.ShowDialog();
+
+            if (result == true)
+            {
+                string filename = openFileDialog.FileName;
+                throw new NotImplementedException();
+            }
+        }
+
+        private void PauseButtonClick(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
+        /// <summary>
+        /// Reset the game.
+        /// </summary>
+        private void NewGame()
+        {
+            this.game = new Game();
+            DrawBoard();
+        }
         /// <summary>
         /// Draws the board in the window's canvas.
         /// </summary>
         private void DrawBoard()
         {
-            int[,] gameBoard = game.Board;
-            int min = (int) Math.Min(boardCanvas.Width, boardCanvas.Height);
+            int[,] gameBoard = this.game.Board;
+            int min = (int) Math.Min(this.boardCanvas.Width, this.boardCanvas.Height);
             SolidColorBrush brush = new SolidColorBrush();
 
             brush.Color = Color.FromRgb(0, 128, 0);
-            boardCanvas.Width = min;
-            boardCanvas.Height = min;
+            this.boardCanvas.Width = min;
+            this.boardCanvas.Height = min;
 
             int size = min / 8;
 
@@ -53,7 +113,7 @@ namespace Othello
                     rectangle.Height = size;
                     rectangle.Fill = brush;
                     rectangle.Stroke = Brushes.Black;
-                    boardCanvas.Children.Add(rectangle);
+                    this.boardCanvas.Children.Add(rectangle);
                     Canvas.SetTop(rectangle, j * size);
                     Canvas.SetLeft(rectangle, i * size);
                     if (gameBoard[i, j] == 0)
@@ -64,7 +124,7 @@ namespace Othello
                         circle.Height = size;
                         circle.Fill = brush;
                         circle.Stroke = Brushes.Black;
-                        boardCanvas.Children.Add(circle);
+                        this.boardCanvas.Children.Add(circle);
                         Canvas.SetTop(circle, j * size);
                         Canvas.SetLeft(circle, i * size);
                     }
@@ -76,7 +136,7 @@ namespace Othello
                         circle.Height = size;
                         circle.Fill = brush;
                         circle.Stroke = Brushes.White;
-                        boardCanvas.Children.Add(circle);
+                        this.boardCanvas.Children.Add(circle);
                         Canvas.SetTop(circle, j * size);
                         Canvas.SetLeft(circle, i * size);
                     }

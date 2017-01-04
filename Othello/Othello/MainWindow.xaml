@@ -31,6 +31,14 @@
             <ColumnDefinition Width="2*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <StackPanel
+            Grid.Column="0" Grid.Row="0"
+            VerticalAlignment="Center" HorizontalAlignment="Center"
+        >
+            <Label Content="{Binding Source={StaticResource Game}, Path=CurrentPlayerName}"
+                ContentStringFormat="Tour: {0}" FontWeight="Bold"
+            />
+        </StackPanel>
+        <StackPanel
             Grid.Column="1"
             Grid.Row="0"
             Orientation="Horizontal" HorizontalAlignment="Center"
@@ -43,10 +51,10 @@
                     <Setter Property="Width" Value="60"/>
                 </Style>
             </StackPanel.Resources>
-            <Button>New</Button>
-            <Button>Save</Button>
-            <Button>Load</Button>
-            <Button>Pause</Button>
+            <Button x:Name="newGameButton">New</Button>
+            <Button x:Name="saveButton">Save</Button>
+            <Button x:Name="loadButton">Load</Button>
+            <Button x:Name="pauseButton">Pause</Button>
         </StackPanel>
         <StackPanel
             Grid.Column="0"
@@ -72,13 +80,11 @@
                    ContentStringFormat="White Time: {0}"/>
         </StackPanel>
         <ProgressBar
-            Grid.Column="1"
-            Grid.Row="2"
-            Height="30" Margin="10,0,10,0"
-            Value="50"
-            Foreground="Black"
-            Background="White"
-        >
-        </ProgressBar>
+                Grid.Column="1" Grid.Row="2"
+                Height="30" Margin="10,0,10,0"
+                Value="50"
+                Foreground="Black"
+                Background="White"
+            />
     </Grid>
 </Window>
