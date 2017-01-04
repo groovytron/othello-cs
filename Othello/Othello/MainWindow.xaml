@@ -17,23 +17,24 @@
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="0.3*"></RowDefinition>
-            <RowDefinition Height="2*"></RowDefinition>
-            <RowDefinition Height="0.5*"></RowDefinition>
+            <RowDefinition Height="0.8*"></RowDefinition>
+            <RowDefinition Height="8.4*"></RowDefinition>
+            <RowDefinition Height="0.6*"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*"></ColumnDefinition>
-            <ColumnDefinition Width="8*"></ColumnDefinition>
+            <ColumnDefinition Width="8.4*"></ColumnDefinition>
             <ColumnDefinition Width="2*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <StackPanel
-            Grid.Column="1" 
+            Grid.Column="1"
+            Grid.Row="0"
             Orientation="Horizontal" HorizontalAlignment="Center"
             Height="60"
         >
             <StackPanel.Resources>
                 <Style TargetType="{x:Type Button}">
-                    <Setter Property="Margin" Value="10,10,10,10"/>
+                    <Setter Property="Margin" Value="10,0,5,10"/>
                     <Setter Property="Height" Value="30"/>
                     <Setter Property="Width" Value="60"/>
                 </Style>
@@ -54,10 +55,13 @@
             <Label>Black Score</Label>
             <Label>Black Time</Label>
         </StackPanel>
+        <Canvas x:Name="board" Grid.Row="1" Grid.Column="1" Width="480" Height="480">
+            
+        </Canvas>
         <ProgressBar
             Grid.Column="1"
             Grid.Row="2"
-            Height="50" Margin="10,10,10,10"
+            Height="30" Margin="10,0,10,0"
             Value="50"
             Foreground="Black"
             Background="White"
