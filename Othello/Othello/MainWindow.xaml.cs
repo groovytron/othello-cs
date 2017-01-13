@@ -104,7 +104,7 @@ namespace Othello
         /// </summary>
         private void DrawBoard()
         {
-            int[,] gameBoard = this.game.Board;
+             Tile[,] gameBoard = this.game.Board;
             int min = (int) Math.Min(this.boardCanvas.Width, this.boardCanvas.Height);
             SolidColorBrush brush = new SolidColorBrush();
 
@@ -125,9 +125,9 @@ namespace Othello
                     rectangle.Fill = brush;
                     rectangle.Stroke = Brushes.Black;
                     this.boardCanvas.Children.Add(rectangle);
-                    Canvas.SetTop(rectangle, j * this.squareSize);
-                    Canvas.SetLeft(rectangle, i * this.squareSize);
-                    if (gameBoard[i, j] == 0)
+                    Canvas.SetTop(rectangle, i * this.squareSize);
+                    Canvas.SetLeft(rectangle, j * this.squareSize);
+                    if (gameBoard[i, j].Value == 0)
                     {
                         brush.Color = Color.FromRgb(255, 255, 255);
                         Ellipse circle = new Ellipse();
@@ -136,10 +136,10 @@ namespace Othello
                         circle.Fill = brush;
                         circle.Stroke = Brushes.Black;
                         this.boardCanvas.Children.Add(circle);
-                        Canvas.SetTop(circle, j * this.squareSize);
-                        Canvas.SetLeft(circle, i * this.squareSize);
+                        Canvas.SetTop(circle, i * this.squareSize);
+                        Canvas.SetLeft(circle, j * this.squareSize);
                     }
-                    if (gameBoard[i, j] == 1)
+                    if (gameBoard[i, j].Value == 1)
                     {
                         brush.Color = Color.FromRgb(0, 0, 0);
                         Ellipse circle = new Ellipse();
@@ -148,8 +148,8 @@ namespace Othello
                         circle.Fill = brush;
                         circle.Stroke = Brushes.White;
                         this.boardCanvas.Children.Add(circle);
-                        Canvas.SetTop(circle, j * this.squareSize);
-                        Canvas.SetLeft(circle, i * this.squareSize);
+                        Canvas.SetTop(circle, i * this.squareSize);
+                        Canvas.SetLeft(circle, j * this.squareSize);
                     }
                 }
             }
