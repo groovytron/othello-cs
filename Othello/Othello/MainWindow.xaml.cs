@@ -86,9 +86,10 @@ namespace Othello
         private void AddPawn(object sender, MouseButtonEventArgs e)
         {
             Point pos = e.GetPosition(boardCanvas);
-            int x = (int) pos.X / this.squareSize;
-            int y = (int) pos.Y / this.squareSize;
+            int x = (int) pos.Y / this.squareSize;
+            int y = (int) pos.X / this.squareSize;
             Console.WriteLine($"Trying to add a pawn at square {x}, {y}");
+
         }
         #endregion
         /// <summary>

@@ -64,6 +64,7 @@ namespace Othello
         private Tile[,] board;
         private const int BOARDSIZE = 8;
         private bool isWhiteTurn;
+        private List<Tile> playable;
         //private int time;
         public Game()
         {
@@ -71,6 +72,7 @@ namespace Othello
             players.Add("white",new Player());
             players.Add("black", new Player());
             board = new Tile[BOARDSIZE, BOARDSIZE];
+            playable = new List<Tile>();
             for (int i = 0; i < BOARDSIZE; i++)
             {
                 for (int j = 0; j < BOARDSIZE; j++)
@@ -170,7 +172,12 @@ namespace Othello
                 player.Value.reset();
             }
 
-            board[0, 3].Value = 0;
+            board[3, 3].Value = 0;
+            board[3, 4].Value = 1;
+            board[4, 3].Value = 1;
+            board[4, 4].Value = 0;
+
+            /*board[0, 3].Value = 0;
             board[0, 4].Value = 1;
             board[0, 5].Value = 0;
             board[0, 7].Value = 0;
@@ -212,7 +219,7 @@ namespace Othello
             board[6, 4].Value = 0;
 
             board[7, 0].Value = 0;
-            board[7, 3].Value = 0;
+            board[7, 3].Value = 0;*/
 
 
 
@@ -228,15 +235,7 @@ namespace Othello
             ///
 
             showBoard();
-            var list = getPlayableSquares(true);
-
-            foreach (var player in list)
-            {
-                Console.WriteLine(player);  
-            }
-
-            Console.WriteLine(list.Count);
-
+            getPlayableTile(true);
 
 
         }
@@ -246,10 +245,10 @@ namespace Othello
 
         }
 
-        public List<Tile> getPlayableSquares(bool isWhiteTurn)
+        public void getPlayableTile(bool isWhiteTurn)
         {
             List<Tile> potential = new List<Tile>();
-            HashSet<Tile> playable = new HashSet<Tile>();
+            HashSet<Tile> playableSet = new HashSet<Tile>();
             int enemy = isWhiteTurn ? 0 : 1 ;
             int me = isWhiteTurn ? 1 : 0;
 
@@ -272,13 +271,13 @@ namespace Othello
                     {
                         if (checkTile(new Tile(tile.X,tile.Y, me, this), neighbor))
                         {
-                            playable.Add(tile);
+                            playableSet.Add(tile);
                             break;
                         }
                     }
                 }
             }
-            return playable.ToList<Tile>();
+            playable = playableSet.ToList<Tile>();
         }
 
         private bool checkTile(Tile tile, Tile neighbor)
@@ -311,7 +310,12 @@ namespace Othello
 
         public int getBlackScore()
         {
-            throw new NotImplementedException();
+            return players["black"].Score;
+        }
+
+        public int getWhiteScore()
+        {
+            return players["white"].Score;
         }
 
         public Tuple<char, int> getNextMove(int[,] game, int level, bool whiteTurn)
@@ -319,14 +323,16 @@ namespace Othello
             throw new NotImplementedException();
         }
 
-        public int getWhiteScore()
-        {
-            throw new NotImplementedException();
-        }
-
         public bool isPlayable(int column, int line, bool isWhite)
         {
-            throw new NotImplementedException();
+            int color = isWhite ? 1 : 0;
+            foreach (var tile in playable)
+            {
+                if(tile.X == column && tile.Y == line){
+                    return true;
+                }
+            }
+            return false;
         }
 
         public bool playMove(int column, int line, bool isWhite)
