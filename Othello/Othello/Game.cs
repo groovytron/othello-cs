@@ -315,7 +315,7 @@ namespace Othello
             return false;
         }
 
-        private void flippeTiles( Tile tile, bool isWhiteTurn)
+        private void flippeTiles(Tile tile, bool isWhiteTurn)
         {
             int enemy = isWhiteTurn ? 0 : 1;
             int me = isWhiteTurn ? 1 : 0;
@@ -341,7 +341,7 @@ namespace Othello
                         visited = board[x, y];
                         if (visited.Value == tile.Value)
                         {
-                            Board[visited.X, visited.Y].Value = tile.Value;
+                            Board[visited.X, visited.Y].Value = me;
                         }
                         neighborTile = visited;
                     } while (visited.Value != tile.Value && visited.Value != -1 && x > 1 && x < 7 && y > 1 && y < 7);
@@ -379,17 +379,18 @@ namespace Othello
         public bool playMove(int column, int line, bool isWhite)
         {
             getPlayableTile(isWhite);
-            Console.WriteLine("Before playing");
-            foreach (var tile in this.playable)
-            {
-                Console.WriteLine($"Playable at x:{tile.X}, y:{tile.Y}");
-            }
+            //Console.WriteLine("Before playing");
+            //foreach (var tile in this.playable)
+            //{
+            //    Console.WriteLine($"Playable at x:{tile.X}, y:{tile.Y}");
+            //}
             if (!isPlayable(column, line, isWhite))
             {
                 return false;
             }
 
             board[line, column].Value = isWhite ? 1 : 0;
+            flippeTiles(board[line, column], isWhite);
             isWhiteTurn = !isWhiteTurn;
             getPlayableTile(isWhiteTurn);
             if (this.playable.Count == 0)
@@ -397,11 +398,12 @@ namespace Othello
                 isWhiteTurn = !isWhiteTurn;
             }
             getPlayableTile(!isWhite);
-            Console.WriteLine("After playing");
-            foreach (var tile in this.playable)
-            {
-                Console.WriteLine($"Playable at x:{tile.X}, y:{tile.Y}");
-            }
+            //Console.WriteLine("After playing");
+            //foreach (var tile in this.playable)
+            //{
+            //    Console.WriteLine($"Playable at x:{tile.X}, y:{tile.Y}");
+            //}
+            showBoard();
             return true;
         }
     }
