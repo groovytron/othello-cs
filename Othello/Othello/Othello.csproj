@@ -67,6 +67,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Tile.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="IPlayable.cs" />
     <Compile Include="MainWindow.xaml.cs">
