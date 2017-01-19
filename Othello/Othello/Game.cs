@@ -45,18 +45,18 @@ namespace Othello
             get { return this.board; }
             set { this.board = value;  }
         }
+        public bool CurrentPlayer
+        {
+            get
+            {
+                return this.isWhiteTurn;
+            }
+        }
         public string CurrentPlayerName
         {
             get
             {
-                if (isWhiteTurn)
-                {
-                    return "White";
-                }
-                else
-                {
-                    return "Black";
-                }
+                return isWhiteTurn ? "White" : "Black";
             }
         }
         public double BlackPawns
@@ -71,6 +71,7 @@ namespace Othello
         private bool isWhiteTurn;
         private int placedPawnsCount;
         private List<Tile> playable;
+
         //private int time;
         public Game()
         {
@@ -287,6 +288,8 @@ namespace Othello
             playable = playableSet.ToList<Tile>();
         }
 
+
+
         private bool checkTile(Tile tile, Tile neighbor)
         {
 
@@ -344,13 +347,29 @@ namespace Othello
 
         public bool playMove(int column, int line, bool isWhite)
         {
-            if (isWhite)
+            getPlayableTile(isWhite);
+            Console.WriteLine("Before playing");
+            foreach (var tile in this.playable)
             {
-                board[line, column].Value = 0;
+                Console.WriteLine($"Playable at x:{tile.X}, y:{tile.Y}");
             }
-            else
+            if (!isPlayable(column, line, isWhite))
             {
-                board[line, column].Value = 1;
+                return false;
+            }
+
+            board[line, column].Value = isWhite ? 1 : 0;
+            isWhiteTurn = !isWhiteTurn;
+            getPlayableTile(isWhiteTurn);
+            if (this.playable.Count == 0)
+            {
+                isWhiteTurn = !isWhiteTurn;
+            }
+            getPlayableTile(!isWhite);
+            Console.WriteLine("After playing");
+            foreach (var tile in this.playable)
+            {
+                Console.WriteLine($"Playable at x:{tile.X}, y:{tile.Y}");
             }
             return true;
         }

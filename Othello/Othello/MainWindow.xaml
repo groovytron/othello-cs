@@ -34,7 +34,7 @@
             Grid.Column="0" Grid.Row="0"
             VerticalAlignment="Center" HorizontalAlignment="Center"
         >
-            <Label Content="{Binding Source={StaticResource Game}, Path=CurrentPlayerName}"
+            <Label Content="{Binding Source={StaticResource Game}, Path=CurrentPlayerName, UpdateSourceTrigger=PropertyChanged}"
                 ContentStringFormat="Tour: {0}" FontWeight="Bold"
             />
         </StackPanel>

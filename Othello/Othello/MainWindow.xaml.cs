@@ -87,10 +87,18 @@ namespace Othello
         private void AddPawn(object sender, MouseButtonEventArgs e)
         {
             Point pos = e.GetPosition(boardCanvas);
-            int x = (int) pos.Y / this.squareSize;
-            int y = (int) pos.X / this.squareSize;
-            Console.WriteLine($"Trying to add a pawn at square {x}, {y}");
-
+            int column = (int)pos.X / this.squareSize;
+            int line = (int) pos.Y / this.squareSize;
+            Console.WriteLine($"Trying to add a pawn at square {column}, {line}");
+            if (this.game.playMove(column, line, this.game.CurrentPlayer))
+            {
+                this.DrawBoard();
+            }
+            else
+            {
+                Console.WriteLine($"{(this.game.CurrentPlayer ? "White" : "Black")} cannot play.");
+            }
+            
         }
         #endregion
         /// <summary>
