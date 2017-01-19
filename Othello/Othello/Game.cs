@@ -287,12 +287,9 @@ namespace Othello
             }
             playable = playableSet.ToList<Tile>();
         }
-
-
-
+        
         private bool checkTile(Tile tile, Tile neighbor)
         {
-
             int offsetX = tile.X - neighbor.X;
             int offsetY = tile.Y - neighbor.Y;
             Tile visited;
@@ -316,6 +313,40 @@ namespace Othello
             } while (visited.Value != tile.Value && visited.Value != -1 && x > 1 && x < 7 && y > 1 && y < 7);
 
             return false;
+        }
+
+        private void flippeTiles( Tile tile, bool isWhiteTurn)
+        {
+            int enemy = isWhiteTurn ? 0 : 1;
+            int me = isWhiteTurn ? 1 : 0;
+            foreach (var neighbor in tile.voisin())
+            {
+                Tile neighborTile = neighbor;
+                if (neighbor.Value == enemy)
+                {
+                    int offsetX = tile.X - neighbor.X;
+                    int offsetY = tile.Y - neighbor.Y;
+                    Tile visited;
+                    int x;
+                    int y;
+                    do
+                    {
+
+                        x = neighborTile.X - offsetX;
+                        y = neighborTile.Y - offsetY;
+                        if (neighbor.X == 0 || neighbor.Y == 0 || neighbor.X == 7 || neighbor.Y == 7)
+                        {
+                            break;
+                        }
+                        visited = board[x, y];
+                        if (visited.Value == tile.Value)
+                        {
+                            Board[visited.X, visited.Y].Value = tile.Value;
+                        }
+                        neighborTile = visited;
+                    } while (visited.Value != tile.Value && visited.Value != -1 && x > 1 && x < 7 && y > 1 && y < 7);
+                }
+            }
         }
 
         public int getBlackScore()
