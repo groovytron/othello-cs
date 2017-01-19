@@ -17,7 +17,7 @@
         <Style TargetType="{x:Type Label}">
             <Setter Property="FontSize" Value="14"/>
         </Style>
-        <local:Game x:Key="Game" />
+        <!--<local:Game x:Key="Game" />-->
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -34,7 +34,7 @@
             Grid.Column="0" Grid.Row="0"
             VerticalAlignment="Center" HorizontalAlignment="Center"
         >
-            <Label Content="{Binding Source={StaticResource Game}, Path=CurrentPlayerName, UpdateSourceTrigger=PropertyChanged}"
+            <Label Content="{Binding CurrentPlayerName}"
                 ContentStringFormat="Tour: {0}" FontWeight="Bold"
             />
         </StackPanel>
@@ -62,9 +62,9 @@
             Orientation="Vertical" HorizontalAlignment="Center"
             Width="100"
         >
-            <Label Content="{Binding Source={StaticResource Game}, Path=BlackScore}"
+            <Label Content="{Binding BlackPlayer.Score}"
                    ContentStringFormat="Black Score: {0}"/>
-            <Label Content="{Binding Source={StaticResource Game}, Path=BlackTime}"
+            <Label Content="{Binding BlackPlayer.Time}"
                    ContentStringFormat="Black Time: {0}"/>
         </StackPanel>
         <Canvas x:Name="boardCanvas" Grid.Row="1" Grid.Column="1" Width="480" Height="480" />
@@ -74,15 +74,15 @@
             Orientation="Vertical" HorizontalAlignment="Center"
             Width="100"
         >
-            <Label Content="{Binding Source={StaticResource Game}, Path=WhiteScore}"
+            <Label Content="{Binding WhitePlayer.Score}"
                    ContentStringFormat="White Score: {0}"/>
-            <Label Content="{Binding Source={StaticResource Game}, Path=WhiteTime}"
+            <Label Content="{Binding WhitePlayer.Time}"
                    ContentStringFormat="White Time: {0}"/>
         </StackPanel>
         <ProgressBar
                 Grid.Column="1" Grid.Row="2"
                 Height="30" Margin="10,0,10,0"
-                Value="{Binding Source={StaticResource Game}, Path=BlackPawns, UpdateSourceTrigger=PropertyChanged}"
+                Value="12"
                 Minimum="0" Maximum="100"
                 Foreground="Black"
                 Background="White"

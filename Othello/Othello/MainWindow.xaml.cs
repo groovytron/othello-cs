@@ -33,6 +33,7 @@ namespace Othello
             pauseButton.Click += new RoutedEventHandler(PauseButtonClick);
             boardCanvas.MouseLeftButtonDown += new MouseButtonEventHandler(AddPawn);
             this.squareSize = 60;
+            this.DataContext = this.game;
             Console.WriteLine(game.BlackPawns);
         }
         #region event handlers
@@ -114,7 +115,7 @@ namespace Othello
         /// </summary>
         private void DrawBoard()
         {
-             Tile[,] gameBoard = this.game.Board;
+            Tile[,] gameBoard = this.game.Board;
             int min = (int) Math.Min(this.boardCanvas.Width, this.boardCanvas.Height);
             SolidColorBrush brush = new SolidColorBrush();
 

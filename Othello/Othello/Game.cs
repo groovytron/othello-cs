@@ -6,38 +6,25 @@ using System.Threading.Tasks;
 using OthelloConsole;
 using Newtonsoft.Json.Linq;
 using System.IO;
+using System.ComponentModel;
 
 namespace Othello
 {
-    class Game : IPlayable
+    class Game : IPlayable, INotifyPropertyChanged
     {
         #region properties
-        public int WhiteScore
+        public Player WhitePlayer
         {
             get
             {
-                return players["white"].Score;
+                return players["white"];
             }
         }
-        public int WhiteTime
+        public Player BlackPlayer
         {
             get
             {
-                return players["white"].Time;
-            }
-        }
-        public int BlackScore
-        {
-            get
-            {
-                return players["black"].Score;
-            }
-        }
-        public int BlackTime
-        {
-            get
-            {
-                return players["black"].Time;
+                return players["black"];
             }
         }
         public Tile [,] Board
@@ -56,12 +43,18 @@ namespace Othello
         {
             get
             {
-                return isWhiteTurn ? "White" : "Black";
+                return currentPlayerName;
+            }
+            set
+            {
+                currentPlayerName = value;
+                raisePropertyChanged("CurrentPlayerName");
             }
         }
+
         public double BlackPawns
         {
-            get { return BlackScore / placedPawnsCount; }
+            get { return BlackPlayer.Score / placedPawnsCount; }
             set { this.BlackPawns = value; }
         }
         #endregion
@@ -71,6 +64,9 @@ namespace Othello
         private bool isWhiteTurn;
         private int placedPawnsCount;
         private List<Tile> playable;
+        private string currentPlayerName;
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         //private int time;
         public Game()
@@ -232,6 +228,7 @@ namespace Othello
 
 
             isWhiteTurn = false;
+            currentPlayerName = isWhiteTurn ? "White" : "Black";
 
             foreach (var player in players)
             {
@@ -253,7 +250,7 @@ namespace Othello
 
         }
 
-        public void getPlayableTile(bool isWhiteTurn)
+        public List<Tile> getPlayableTile(bool isWhiteTurn)
         {
             List<Tile> potential = new List<Tile>();
             HashSet<Tile> playableSet = new HashSet<Tile>();
@@ -286,6 +283,7 @@ namespace Othello
                 }
             }
             playable = playableSet.ToList<Tile>();
+            return playable;
         }
         
         private bool checkTile(Tile tile, Tile neighbor)
@@ -379,11 +377,6 @@ namespace Othello
         public bool playMove(int column, int line, bool isWhite)
         {
             getPlayableTile(isWhite);
-            //Console.WriteLine("Before playing");
-            //foreach (var tile in this.playable)
-            //{
-            //    Console.WriteLine($"Playable at x:{tile.X}, y:{tile.Y}");
-            //}
             if (!isPlayable(column, line, isWhite))
             {
                 return false;
@@ -392,19 +385,29 @@ namespace Othello
             board[line, column].Value = isWhite ? 1 : 0;
             flippeTiles(board[line, column], isWhite);
             isWhiteTurn = !isWhiteTurn;
+            updateProperties();
             getPlayableTile(isWhiteTurn);
             if (this.playable.Count == 0)
             {
                 isWhiteTurn = !isWhiteTurn;
             }
             getPlayableTile(!isWhite);
-            //Console.WriteLine("After playing");
-            //foreach (var tile in this.playable)
-            //{
-            //    Console.WriteLine($"Playable at x:{tile.X}, y:{tile.Y}");
-            //}
             showBoard();
             return true;
+        }
+
+        private void updateProperties()
+        {
+            CurrentPlayerName = isWhiteTurn ? "White" : "Black";
+            raisePropertyChanged("CurrentPlayerName");
+        }
+
+        private void raisePropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
     }
 }
