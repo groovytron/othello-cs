@@ -33,6 +33,7 @@ namespace Othello
             pauseButton.Click += new RoutedEventHandler(PauseButtonClick);
             boardCanvas.MouseLeftButtonDown += new MouseButtonEventHandler(AddPawn);
             this.squareSize = 60;
+            Console.WriteLine(game.BlackPawns);
         }
         #region event handlers
         private void NewGameButtonClick(object sender, RoutedEventArgs e)

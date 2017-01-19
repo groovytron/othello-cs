@@ -56,11 +56,17 @@ namespace Othello
                 }
             }
         }
+        public double BlackPawns
+        {
+            get { return BlackScore / placedPawnsCount; }
+            set { this.BlackPawns = value; }
+        }
         #endregion
         private Dictionary<string, Player> players;
         private int[,] board;
         private const int BOARDSIZE = 8;
         private bool isWhiteTurn;
+        private int placedPawnsCount;
         //private int time;
         public Game()
         {
@@ -77,8 +83,9 @@ namespace Othello
             }
             showBoard();
             showPlayerStatus();
-
+            placedPawnsCount = 0;
             newGame();
+            placedPawnsCount = 4;
         }
 
         private void showBoard()

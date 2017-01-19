@@ -82,7 +82,8 @@
         <ProgressBar
                 Grid.Column="1" Grid.Row="2"
                 Height="30" Margin="10,0,10,0"
-                Value="50"
+                Value="{Binding Source={StaticResource Game}, Path=BlackPawns, UpdateSourceTrigger=PropertyChanged}"
+                Minimum="0" Maximum="100"
                 Foreground="Black"
                 Background="White"
             />
