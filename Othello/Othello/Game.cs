@@ -317,6 +317,7 @@ namespace Othello
 
         private void flippeTiles(Tile tile, bool isWhiteTurn)
         {
+            Console.WriteLine("flipe");
             int enemy = isWhiteTurn ? 0 : 1;
             int me = isWhiteTurn ? 1 : 0;
             foreach (var neighbor in tile.voisin())
@@ -324,6 +325,7 @@ namespace Othello
                 Tile neighborTile = neighbor;
                 if (neighbor.Value == enemy)
                 {
+                    Board[neighborTile.X, neighborTile.Y].Value = me;
                     int offsetX = tile.X - neighbor.X;
                     int offsetY = tile.Y - neighbor.Y;
                     Tile visited;
@@ -331,7 +333,6 @@ namespace Othello
                     int y;
                     do
                     {
-
                         x = neighborTile.X - offsetX;
                         y = neighborTile.Y - offsetY;
                         if (neighbor.X == 0 || neighbor.Y == 0 || neighbor.X == 7 || neighbor.Y == 7)
@@ -339,9 +340,12 @@ namespace Othello
                             break;
                         }
                         visited = board[x, y];
-                        if (visited.Value == tile.Value)
+                        if (visited.Value == enemy)
                         {
+                            Console.WriteLine(me);
+                            //Console.WriteLine(Board[visited.X, visited.Y].Value);
                             Board[visited.X, visited.Y].Value = me;
+                            
                         }
                         neighborTile = visited;
                     } while (visited.Value != tile.Value && visited.Value != -1 && x > 1 && x < 7 && y > 1 && y < 7);
