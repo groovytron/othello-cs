@@ -80,7 +80,7 @@ namespace Othello
             {
                 for (int j = 0; j < BOARDSIZE; j++)
                 {
-                    board[i, j] = new Tile(i, j, -1, this);
+                    board[j, i] = new Tile(j, i, -1, this);
                 }
             }
             newGame();
@@ -177,8 +177,8 @@ namespace Othello
             }
 
             board[3, 3].Value = 0;
-            board[3, 4].Value = 1;
             board[4, 3].Value = 1;
+            board[3, 4].Value = 1;
             board[4, 4].Value = 0;
 
             /*board[0, 3].Value = 0;
@@ -241,8 +241,6 @@ namespace Othello
 
             showBoard();
             getPlayableTile(true);
-
-
         }
 
         public void pause()
@@ -264,18 +262,20 @@ namespace Othello
                     if (board[i, j].Value == -1 && board[i, j].voisin().Count > 0)
                     {
                         potential.Add(board[i, j]);
+                        //Console.WriteLine($"Potential: {i}, {j}");
                     }
                 }
             }
 
             foreach (var tile in potential)
             {
-                foreach ( var neighbor in tile.voisin())
+                foreach (var neighbor in tile.voisin())
                 {
                     if(neighbor.Value == enemy)
                     {
-                        if (checkTile(new Tile(tile.X,tile.Y, me, this), neighbor))
+                        if (checkTile(new Tile(tile.X, tile.Y, me, this), neighbor))
                         {
+                            //Console.WriteLine($"CheckTile: {tile.X}, {tile.Y}");
                             playableSet.Add(tile);
                             break;
                         }
@@ -283,6 +283,11 @@ namespace Othello
                 }
             }
             playable = playableSet.ToList<Tile>();
+            Console.WriteLine("Playables");
+            foreach (var item in playable)
+            {
+                Console.WriteLine($"Playable {item.X}, {item.Y}");
+            }
             return playable;
         }
         
@@ -371,7 +376,7 @@ namespace Othello
             int color = isWhite ? 1 : 0;
             foreach (var tile in playable)
             {
-                if(tile.X == column && tile.Y == line){
+                if(tile.X == line && tile.Y == column){
                     return true;
                 }
             }
@@ -394,6 +399,7 @@ namespace Othello
             if (this.playable.Count == 0)
             {
                 isWhiteTurn = !isWhiteTurn;
+                updateProperties();
             }
             getPlayableTile(!isWhite);
             showBoard();
