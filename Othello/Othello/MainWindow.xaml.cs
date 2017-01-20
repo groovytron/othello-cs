@@ -34,7 +34,6 @@ namespace Othello
             boardCanvas.MouseLeftButtonDown += new MouseButtonEventHandler(AddPawn);
             this.squareSize = 60;
             this.DataContext = this.game;
-            Console.WriteLine(game.BlackPawns);
         }
         #region event handlers
         private void NewGameButtonClick(object sender, RoutedEventArgs e)

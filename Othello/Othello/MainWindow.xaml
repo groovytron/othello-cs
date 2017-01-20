@@ -82,8 +82,8 @@
         <ProgressBar
                 Grid.Column="1" Grid.Row="2"
                 Height="30" Margin="10,0,10,0"
-                Value="12"
-                Minimum="0" Maximum="100"
+                Value="{Binding RelativeScore}"
+                Minimum="0.0" Maximum="1.0"
                 Foreground="Black"
                 Background="White"
             />

@@ -52,19 +52,19 @@ namespace Othello
             }
         }
 
-        public double BlackPawns
+        public double RelativeScore
         {
-            get { return BlackPlayer.Score / placedPawnsCount; }
-            set { this.BlackPawns = value; }
+            get { return relativeScore; }
+            set { relativeScore = value; raisePropertyChanged("RelativeScore"); }
         }
         #endregion
         private Dictionary<string, Player> players;
         private Tile[,] board;
         private const int BOARDSIZE = 8;
         private bool isWhiteTurn;
-        private int placedPawnsCount;
         private List<Tile> playable;
         private string currentPlayerName;
+        private double relativeScore;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -76,6 +76,7 @@ namespace Othello
             players.Add("black", new Player());
             board = new Tile[BOARDSIZE, BOARDSIZE];
             playable = new List<Tile>();
+            relativeScore = 0;
             for (int i = 0; i < BOARDSIZE; i++)
             {
                 for (int j = 0; j < BOARDSIZE; j++)
@@ -84,7 +85,6 @@ namespace Othello
                 }
             }
             newGame();
-            placedPawnsCount = 4;
         }
 
         private void showBoard()
@@ -98,8 +98,6 @@ namespace Othello
                 }
             }
             Console.WriteLine();
-
-
         }
 
         private void showPlayerStatus()
@@ -174,6 +172,7 @@ namespace Othello
             board[4, 3].Value = 1;
             board[3, 4].Value = 1;
             board[4, 4].Value = 0;
+            updateScore();
 
             /*board[0, 3].Value = 0;
             board[0, 4].Value = 1;
@@ -455,7 +454,8 @@ namespace Othello
             }
             players["white"].Score = w;
             players["black"].Score = b;
-
+            relativeScore = (double) b / (double)(w + b);
+            raisePropertyChanged("RelativeScore");
         }
 
         private void updateProperties()
