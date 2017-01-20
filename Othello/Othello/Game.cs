@@ -317,8 +317,37 @@ namespace Othello
                 Tile neighborTile = neighbor;
                 if (neighbor.Value == enemy)
                 {
-                    Console.WriteLine("Neighbour");
                     bool flip = false;
+
+                    /*int offsetX = tile.X - neighborTile.X;
+                    int offsetY = tile.Y - neighborTile.Y;
+                    Tile visited;
+                    int x;
+                    int y;
+                    do
+                    {
+
+                        x = neighborTile.X - offsetX;
+                        y = neighborTile.Y - offsetY;
+                        if (x < 0 || y < 0 || x > 7 || y > 7)
+                        {
+                            break;
+                        }
+                        visited = board[x, y];
+                        if (visited.Value == enemy)
+                        {
+                            hasToBeFlipped.Add(neighborTile);
+
+                        }
+                        if (visited.Value == me)
+                        {
+                            flip = true;
+                            break;
+                        }
+                        neighborTile = visited;
+                    } while (visited.Value != -1);*/
+
+                            
                     int offsetX = tile.X - neighbor.X;
                     int offsetY = tile.Y - neighbor.Y;
                     int x = neighborTile.X;
@@ -328,25 +357,25 @@ namespace Othello
                         return;
                     }
                     Tile visited = board[x, y];
-                    while (visited.Value != -1 && x > 1 && x < 7 && y > 1 && y < 7)
+                    while (visited.Value != -1 && x > 0 && x < 8 && y > 0 && y < 8)
                     {
-                        Console.WriteLine("coucou");
+                        visited = board[x, y];
+  
                         if (visited.Value == enemy)
                         {
                             hasToBeFlipped.Add(neighborTile);
-
                         }
                         else if (visited.Value == me)
                         {
-                            Console.WriteLine("Fin");
                             flip = true;
                             break;
                         }
                         x = neighborTile.X - offsetX;
                         y = neighborTile.Y - offsetY;
-                        visited = board[x, y];
+                        
                         neighborTile = visited;
                     }
+
                     if (flip)
                     {
                         foreach (var tileToFlip in hasToBeFlipped)
