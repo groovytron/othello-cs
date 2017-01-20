@@ -76,6 +76,7 @@ namespace Othello
             {
                 string filename = openFileDialog.FileName;
                 game.load(filename);
+                DrawBoard();
             }
         }
 
@@ -128,11 +129,19 @@ namespace Othello
             {
                 for(int j = 0; j < 8; j++)
                 {
-                    brush.Color = Color.FromRgb(0, 125, 0);
                     Rectangle rectangle = new Rectangle();
                     rectangle.Width = this.squareSize;
                     rectangle.Height = this.squareSize;
                     rectangle.Fill = Brushes.Green;
+                    foreach (var tile in game.Playable)
+                    {
+                        
+                        if(tile.X == i && tile.Y == j)
+                        {
+                            rectangle.Fill = Brushes.Gray;
+                        }
+                    }
+                    
                     rectangle.Stroke = Brushes.Black;
                     this.boardCanvas.Children.Add(rectangle);
                     Canvas.SetTop(rectangle, i * this.squareSize);

@@ -57,6 +57,19 @@ namespace Othello
             get { return relativeScore; }
             set { relativeScore = value; raisePropertyChanged("RelativeScore"); }
         }
+
+        internal List<Tile> Playable
+        {
+            get
+            {
+                return playable;
+            }
+
+            set
+            {
+                playable = value;
+            }
+        }
         #endregion
         private Dictionary<string, Player> players;
         private Tile[,] board;
@@ -75,7 +88,7 @@ namespace Othello
             players.Add("white",new Player());
             players.Add("black", new Player());
             board = new Tile[BOARDSIZE, BOARDSIZE];
-            playable = new List<Tile>();
+            Playable = new List<Tile>();
             relativeScore = 0;
             for (int i = 0; i < BOARDSIZE; i++)
             {
@@ -135,6 +148,7 @@ namespace Othello
             JObject gameObject = new JObject();
             gameObject.Add("Players",playersObject);
             gameObject.Add("Board",boardObject);
+            gameObject.Add("isWhiteTurn", isWhiteTurn);
 
             File.WriteAllText(filename, gameObject.ToString());
         }
@@ -151,6 +165,7 @@ namespace Othello
             players["black"].Score = (int)playersObject["black"]["score"];
             players["black"].Time = (int)playersObject["black"]["time"];
 
+            isWhiteTurn = (bool) gameObject["isWhiteTurn"];
 
             foreach (var tile in gameObject["Board"])
             {
@@ -159,6 +174,7 @@ namespace Othello
                 int value = (int)tile["Value"];
                 Board[x,y].Value  = value;
             }
+            getPlayableTile(isWhiteTurn);
         }
 
         public void newGame()
@@ -230,10 +246,8 @@ namespace Othello
             }
 
             ///time = DateTime.Now.Millisecond;
-            ///
-
             showBoard();
-            getPlayableTile(true);
+            getPlayableTile(isWhiteTurn);
         }
 
         public void pause()
@@ -241,7 +255,7 @@ namespace Othello
 
         }
 
-        public List<Tile> getPlayableTile(bool isWhiteTurn)
+        public void getPlayableTile(bool isWhiteTurn)
         {
             List<Tile> potential = new List<Tile>();
             HashSet<Tile> playableSet = new HashSet<Tile>();
@@ -273,8 +287,8 @@ namespace Othello
                     }
                 }
             }
-            playable = playableSet.ToList<Tile>();
-            return playable;
+            Playable = playableSet.ToList<Tile>();
+            //return playable;
         }
         
         private bool checkTile(Tile tile, Tile neighbor)
@@ -404,7 +418,7 @@ namespace Othello
         public bool isPlayable(int column, int line, bool isWhite)
         {
             int color = isWhite ? 1 : 0;
-            foreach (var tile in playable)
+            foreach (var tile in Playable)
             {
                 if(tile.X == line && tile.Y == column){
                     return true;
@@ -427,7 +441,7 @@ namespace Othello
             
             updateProperties();
             getPlayableTile(isWhiteTurn);
-            if (this.playable.Count == 0)
+            if (this.Playable.Count == 0)
             {
                 isWhiteTurn = !isWhiteTurn;
                 updateProperties();
