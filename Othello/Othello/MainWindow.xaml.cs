@@ -26,7 +26,7 @@ namespace Othello
         public MainWindow()
         {
             InitializeComponent();
-            NewGame();
+            this.game = new Game();
             newGameButton.Click += new RoutedEventHandler(NewGameButtonClick);
             saveButton.Click += new RoutedEventHandler(SaveButtonClick);
             loadButton.Click += new RoutedEventHandler(LoadButtonClick);
@@ -34,12 +34,14 @@ namespace Othello
             boardCanvas.MouseLeftButtonDown += new MouseButtonEventHandler(AddPawn);
             this.squareSize = 60;
             this.DataContext = this.game;
+            NewGame();
         }
         #region event handlers
+
         private void NewGameButtonClick(object sender, RoutedEventArgs e)
         {
             MessageBoxResult result = MessageBox.Show("Êtes vous sûr de vouloir lancer une nouvelle partie?", "Nouvelle partie", MessageBoxButton.OKCancel, MessageBoxImage.Question);
-            if (result == MessageBoxResult.Yes)
+            if (result == MessageBoxResult.OK)
             {
                 NewGame();
             }
@@ -107,7 +109,8 @@ namespace Othello
         /// </summary>
         private void NewGame()
         {
-            this.game = new Game();
+            Console.WriteLine("yolo");
+            game.newGame();
             DrawBoard();
         }
         /// <summary>

@@ -97,7 +97,7 @@ namespace Othello
                     board[j, i] = new Tile(j, i, -1, this);
                 }
             }
-            newGame();
+            //newGame();
         }
 
         private void showBoard()
@@ -179,62 +179,22 @@ namespace Othello
 
         public void newGame()
         {
+            Console.WriteLine("coucou Game");
             foreach (var player in players)
             {
                 player.Value.reset();
+            }
+            foreach (var tile in board)
+            {
+                board[tile.X, tile.Y].Value = -1;
             }
 
             board[3, 3].Value = 0;
             board[4, 3].Value = 1;
             board[3, 4].Value = 1;
             board[4, 4].Value = 0;
+            
             updateScore();
-
-            /*board[0, 3].Value = 0;
-            board[0, 4].Value = 1;
-            board[0, 5].Value = 0;
-            board[0, 7].Value = 0;
-
-            board[1, 2].Value = 0;
-            board[1, 3].Value = 1;
-            board[1, 4].Value = 1;
-            board[1, 6].Value = 0;
-
-            board[2, 1].Value = 0;
-            board[2, 2].Value = 1;
-            board[2, 3].Value = 1;
-            board[2, 4].Value = 1;
-            board[2, 5].Value = 1;
-
-            board[3, 0].Value = 0;
-            board[3, 2].Value = 0;
-            board[3, 3].Value = 0;
-            board[3, 4].Value = 1;
-            board[3, 5].Value = 0;
-            board[3, 6].Value = 0;
-            board[3, 7].Value = 0;
-
-            board[4, 1].Value = 0;
-            board[4, 2].Value = 1;
-            board[4, 3].Value = 0;
-            board[4, 4].Value = 1;
-            board[4, 5].Value = 1;
-            board[4, 6].Value = 0;
-
-            board[5, 0].Value = 0;
-            board[5, 1].Value = 0;
-            board[5, 2].Value = 0;
-            board[5, 3].Value = 1;
-            board[5, 4].Value = 1;
-            board[5, 5].Value = 0;
-
-            board[6, 1].Value = 0;
-            board[6, 4].Value = 0;
-
-            board[7, 0].Value = 0;
-            board[7, 3].Value = 0;*/
-
-
 
             isWhiteTurn = false;
             currentPlayerName = isWhiteTurn ? "White" : "Black";
