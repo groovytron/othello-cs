@@ -425,6 +425,7 @@ namespace Othello
             board[line, column].Value = isWhite ? 1 : 0;
             flippeTiles(board[line, column], isWhite);
             isWhiteTurn = !isWhiteTurn;
+            
             updateProperties();
             getPlayableTile(isWhiteTurn);
             if (this.playable.Count == 0)
@@ -433,8 +434,28 @@ namespace Othello
                 updateProperties();
             }
             getPlayableTile(!isWhite);
+            updateScore();
             showBoard();
             return true;
+        }
+
+        private void updateScore()
+        {
+            int b = 0; 
+            int w= 0;
+            foreach (var tile in board)
+            {
+                if(tile.Value == 1)
+                {
+                    w++;
+                }else if (tile.Value == 0)
+                {
+                    b++;
+                }
+            }
+            players["white"].Score = w;
+            players["black"].Score = b;
+
         }
 
         private void updateProperties()

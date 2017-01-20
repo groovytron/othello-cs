@@ -1,15 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Othello
 {
-    class Player
+    class Player : INotifyPropertyChanged
     {
         private int time;
         private int score;
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public Player()
         {
@@ -53,6 +56,15 @@ namespace Othello
             set
             {
                 score = value;
+                raisePropertyChanged("Score");
+            }
+        }
+
+        private void raisePropertyChanged(string v)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(v));
             }
         }
     }
