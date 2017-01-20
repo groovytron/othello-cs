@@ -290,7 +290,7 @@ namespace Othello
                 
                 x = neighbor.X - offsetX;
                 y = neighbor.Y - offsetY;
-                if (neighbor.X == 0 || neighbor.Y == 0 || neighbor.X == 7 || neighbor.Y == 7)
+                if (x < 0 || y < 0 || x > 7 || y > 7)
                 {
                     return false;
                 }
@@ -300,7 +300,7 @@ namespace Othello
                     return true;
                 }
                 neighbor = visited;
-            } while (visited.Value != tile.Value && visited.Value != -1 && x > 1 && x < 7 && y > 1 && y < 7);
+            } while (visited.Value != tile.Value && visited.Value != -1);
 
             return false;
         }
