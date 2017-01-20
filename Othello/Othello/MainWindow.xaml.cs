@@ -133,7 +133,7 @@ namespace Othello
                     Rectangle rectangle = new Rectangle();
                     rectangle.Width = this.squareSize;
                     rectangle.Height = this.squareSize;
-                    rectangle.Fill = brush;
+                    rectangle.Fill = Brushes.Green;
                     rectangle.Stroke = Brushes.Black;
                     this.boardCanvas.Children.Add(rectangle);
                     Canvas.SetTop(rectangle, i * this.squareSize);
