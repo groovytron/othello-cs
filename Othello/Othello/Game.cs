@@ -262,7 +262,6 @@ namespace Othello
                     if (board[i, j].Value == -1 && board[i, j].voisin().Count > 0)
                     {
                         potential.Add(board[i, j]);
-                        //Console.WriteLine($"Potential: {i}, {j}");
                     }
                 }
             }
@@ -275,7 +274,6 @@ namespace Othello
                     {
                         if (checkTile(new Tile(tile.X, tile.Y, me, this), neighbor))
                         {
-                            //Console.WriteLine($"CheckTile: {tile.X}, {tile.Y}");
                             playableSet.Add(tile);
                             break;
                         }
@@ -283,11 +281,6 @@ namespace Othello
                 }
             }
             playable = playableSet.ToList<Tile>();
-            Console.WriteLine("Playables");
-            foreach (var item in playable)
-            {
-                Console.WriteLine($"Playable {item.X}, {item.Y}");
-            }
             return playable;
         }
         
@@ -323,35 +316,50 @@ namespace Othello
             Console.WriteLine("flipe");
             int enemy = isWhiteTurn ? 0 : 1;
             int me = isWhiteTurn ? 1 : 0;
+
             foreach (var neighbor in tile.voisin())
             {
+                List<Tile> hasToBeFlipped = new List<Tile>();
                 Tile neighborTile = neighbor;
                 if (neighbor.Value == enemy)
                 {
-                    Board[neighborTile.X, neighborTile.Y].Value = me;
+                    Console.WriteLine("Neighbour");
+                    bool flip = false;
                     int offsetX = tile.X - neighbor.X;
                     int offsetY = tile.Y - neighbor.Y;
-                    Tile visited;
-                    int x;
-                    int y;
-                    do
+                    int x = neighborTile.X;
+                    int y = neighborTile.Y;
+                    if (x < 0 && x > 7 && y < 0 && y > 7)
                     {
-                        x = neighborTile.X - offsetX;
-                        y = neighborTile.Y - offsetY;
-                        if (neighbor.X == 0 || neighbor.Y == 0 || neighbor.X == 7 || neighbor.Y == 7)
-                        {
-                            break;
-                        }
-                        visited = board[x, y];
+                        return;
+                    }
+                    Tile visited = board[x, y];
+                    while (visited.Value != -1 && x > 1 && x < 7 && y > 1 && y < 7)
+                    {
+                        Console.WriteLine("coucou");
                         if (visited.Value == enemy)
                         {
-                            Console.WriteLine(me);
-                            //Console.WriteLine(Board[visited.X, visited.Y].Value);
-                            Board[visited.X, visited.Y].Value = me;
-                            
+                            hasToBeFlipped.Add(neighborTile);
+
                         }
+                        else if (visited.Value == me)
+                        {
+                            Console.WriteLine("Fin");
+                            flip = true;
+                            break;
+                        }
+                        x = neighborTile.X - offsetX;
+                        y = neighborTile.Y - offsetY;
+                        visited = board[x, y];
                         neighborTile = visited;
-                    } while (visited.Value != tile.Value && visited.Value != -1 && x > 1 && x < 7 && y > 1 && y < 7);
+                    }
+                    if (flip)
+                    {
+                        foreach (var tileToFlip in hasToBeFlipped)
+                        {
+                            board[tileToFlip.X, tileToFlip.Y].Value = me;
+                        }
+                    }
                 }
             }
         }
