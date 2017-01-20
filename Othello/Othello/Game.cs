@@ -110,63 +110,57 @@ namespace Othello
             }
         }
 
-        public void save()
+        public void save(string filename)
         {
-            JObject o = new JObject
+
+            JObject playersObject = new JObject();
+
+            foreach (var player in players)
             {
-                {
-                    "Players" , new JObject
-                    {
-                        {
-                            "white", new JObject
-                            {
-                                {"score", players["white"].Score },
-                                {"time" , players["white"].Time }
-                            }
-                        }
-                            ,
-                        {
-
-                            "black", new JObject
-                            {
-                                {"score", players["black"].Score },
-                                {"time" , players["black"].Time }
-                            }
-                        }
-                    }
-                    },
-                {
-                    "Board" , new JArray(board)
-                }
-            };
-
-            File.WriteAllText("partie.json", o.ToString());
-        }
-
-        public void load()
-        {
-            JObject o = JObject.Parse(File.ReadAllText("partie.json"));
-
-            var a = (JObject)o["Players"];
-
-            players["white"].Score = (int)a["white"]["score"];
-            players["white"].Time = (int)a["white"]["time"];
-
-            players["black"].Score = (int)a["black"]["score"];
-            players["black"].Time = (int)a["black"]["time"];
-
-
-            var b = o["Board"].ToObject<int[]>();
-
-            var h = 0;
-            for (int i = 0; i < BOARDSIZE; i++)
-            {
-                for (int j = 0; j < BOARDSIZE; j++)
-                {
-                    //board[i, j] = b[h++];
-                }
+                JObject o = new JObject();
+                o.Add("score",player.Value.Score);
+                o.Add("time", player.Value.Time);
+                playersObject.Add(player.Key,o);
             }
 
+            JArray boardObject = new JArray();
+
+            foreach (var tile in board)
+            {
+                JObject o = new JObject();
+                o.Add("X", tile.X);
+                o.Add("Y", tile.Y);
+                o.Add("Value", tile.Value);
+                boardObject.Add(o);
+            }
+
+            JObject gameObject = new JObject();
+            gameObject.Add("Players",playersObject);
+            gameObject.Add("Board",boardObject);
+
+            File.WriteAllText(filename, gameObject.ToString());
+        }
+
+        public void load(string filename)
+        {
+            JObject gameObject = JObject.Parse(File.ReadAllText(filename));
+
+            var playersObject = (JObject)gameObject["Players"];
+
+            players["white"].Score = (int)playersObject["white"]["score"];
+            players["white"].Time = (int)playersObject["white"]["time"];
+
+            players["black"].Score = (int)playersObject["black"]["score"];
+            players["black"].Time = (int)playersObject["black"]["time"];
+
+
+            foreach (var tile in gameObject["Board"])
+            {
+                int x = (int)tile["X"];
+                int y = (int)tile["Y"];
+                int value = (int)tile["Value"];
+                Board[x,y].Value  = value;
+            }
         }
 
         public void newGame()

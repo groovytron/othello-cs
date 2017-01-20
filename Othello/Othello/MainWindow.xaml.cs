@@ -47,8 +47,8 @@ namespace Othello
         }
 
         private void SaveButtonClick(object sender, RoutedEventArgs e)
-        {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
+        { 
+            SaveFileDialog openFileDialog = new SaveFileDialog();
             openFileDialog.Title = "Sauver une partie";
             openFileDialog.FileName = "game";
             openFileDialog.DefaultExt = ".json";
@@ -59,7 +59,7 @@ namespace Othello
             if (result == true)
             {
                 string filename = openFileDialog.FileName;
-                throw new NotImplementedException();
+                game.save(filename);
             }
         }
 
@@ -76,7 +76,7 @@ namespace Othello
             if (result == true)
             {
                 string filename = openFileDialog.FileName;
-                throw new NotImplementedException();
+                game.load(filename);
             }
         }
 
