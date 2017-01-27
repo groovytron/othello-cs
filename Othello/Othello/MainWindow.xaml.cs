@@ -84,7 +84,7 @@ namespace Othello
 
         private void PauseButtonClick(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            game.pause();
         }
 
         private void AddPawn(object sender, MouseButtonEventArgs e)
@@ -109,7 +109,6 @@ namespace Othello
         /// </summary>
         private void NewGame()
         {
-            Console.WriteLine("yolo");
             game.newGame();
             DrawBoard();
         }

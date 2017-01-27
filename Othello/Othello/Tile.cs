@@ -59,12 +59,14 @@ namespace Othello
             {
                 for (var dy = -1; dy <= 1; dy++)
                 {
+                    var xx = x + dx;
+                    var yy = y + dy;
                     if (dx == 0 && dy == 0) { }
-                    if (x + dx >= 0 && x + dx < 8 && y + dy >= 0 && y + dy < 8)
+                    if (xx >= 0 && xx < 8 && yy >= 0 && yy < 8)
                     {
-                        if(game.Board[x + dx, y + dy].value != -1)
+                        if(game.Board[xx, yy].value != -1)
                         {
-                            voisin.Add(game.Board[x + dx, y + dy]);
+                            voisin.Add(game.Board[xx, yy]);
                         }
   
                     }                   
