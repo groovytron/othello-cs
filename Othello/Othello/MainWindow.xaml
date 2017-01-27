@@ -35,7 +35,7 @@
             VerticalAlignment="Center" HorizontalAlignment="Center"
         >
             <Label Content="{Binding CurrentPlayerName}"
-                ContentStringFormat="Tour: {0}" FontWeight="Bold"
+                ContentStringFormat="Turn: {0}" FontWeight="Bold"
             />
         </StackPanel>
         <StackPanel

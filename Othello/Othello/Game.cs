@@ -78,6 +78,7 @@ namespace Othello
         private List<Tile> playable;
         private string currentPlayerName;
         private double relativeScore;
+        private int totalScore;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -378,6 +379,10 @@ namespace Othello
             getPlayableTile(isWhiteTurn);
             updateScore();
             showBoard();
+            if(totalScore == 64)
+            {
+                //fin du jeux 
+            }
             return true;
         }
 
@@ -395,6 +400,7 @@ namespace Othello
                     b++;
                 }
             }
+            totalScore = b + w;
             players["white"].Score = w;
             players["black"].Score = b;
             relativeScore = (double) b / (double)(w + b);
