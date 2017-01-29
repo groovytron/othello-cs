@@ -444,7 +444,7 @@ namespace Othello
             if(totalScore == 64)
             {
                 //fin du jeux 
-                GameOver("All the pawn as been place.");
+                GameOver("All the pawns have been placed.");
             }
             return true;
         }
