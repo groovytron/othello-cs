@@ -23,6 +23,7 @@ namespace Othello
     {
         private Game game;
         private int squareSize;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -34,7 +35,9 @@ namespace Othello
             boardCanvas.MouseLeftButtonDown += new MouseButtonEventHandler(AddPawn);
             this.squareSize = 60;
             this.DataContext = this.game;
+            
             NewGame();
+
         }
         #region event handlers
 
@@ -48,7 +51,8 @@ namespace Othello
         }
 
         private void SaveButtonClick(object sender, RoutedEventArgs e)
-        { 
+        {
+            PauseButtonClick(null, null);
             SaveFileDialog openFileDialog = new SaveFileDialog();
             openFileDialog.Title = "Sauver une partie";
             openFileDialog.FileName = "game";
@@ -66,6 +70,7 @@ namespace Othello
 
         private void LoadButtonClick(object sender, RoutedEventArgs e)
         {
+            PauseButtonClick(null, null);
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Title = "Charger une partie";
             openFileDialog.FileName = "game";
@@ -85,6 +90,7 @@ namespace Othello
         private void PauseButtonClick(object sender, RoutedEventArgs e)
         {
             game.pause();
+            pauseButton.Content = game.Paused ? "Resume" : "Pause"; 
         }
 
         private void AddPawn(object sender, MouseButtonEventArgs e)

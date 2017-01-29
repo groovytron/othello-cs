@@ -13,6 +13,13 @@ namespace Othello
     class Game : IPlayable, INotifyPropertyChanged
     {
         #region properties
+        public bool Paused {
+            get
+            {
+                return paused;
+            }
+        }
+
         public Player WhitePlayer
         {
             get
@@ -87,6 +94,7 @@ namespace Othello
         private string currentPlayerName;
         private double relativeScore;
         private int totalScore;
+        private bool paused;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -214,14 +222,26 @@ namespace Othello
             }
 
             ///time = DateTime.Now.Millisecond;
+            BlackPlayer.reset();
+            WhitePlayer.reset();
             showBoard();
             getPlayableTile(isWhiteTurn);
             CurrentPlayerInstance.StartTimer();
+            paused = false;
         }
 
         public void pause()
         {
-
+            paused = !paused;
+            if (paused)
+            {
+                CurrentPlayerInstance.StopTimer();
+            }
+            else
+            {
+                CurrentPlayerInstance.StartTimer();
+            }
+            raisePropertyChanged("Paused");
         }
 
         public void getPlayableTile(bool isWhiteTurn)
