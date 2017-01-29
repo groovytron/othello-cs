@@ -10,14 +10,18 @@ namespace Othello
 {
     class Player : INotifyPropertyChanged
     {
-        private static readonly int GAME_TIME = 30 * 60;
+        //private static readonly int GAME_TIME = 30 * 60;
+
+        private static readonly int GAME_TIME = 2;
         private int time;
         private int score;
         private Timer timer;
         public event PropertyChangedEventHandler PropertyChanged;
+        private Game game;
 
-        public Player()
+        public Player(Game game)
         {
+            this.game = game;
             time = GAME_TIME;
             score = 0;
             Time = GAME_TIME;
@@ -37,6 +41,11 @@ namespace Othello
 
         private void DecrementTime(Object source, ElapsedEventArgs e)
         {
+            if (Time - 1 < 0)
+            {
+                timer.Stop();
+                game.GameOver("Le temps d'un joueur est arrivé à terme.");
+            }
             Time = Time - 1;
         }
 
@@ -83,6 +92,12 @@ namespace Othello
                 raisePropertyChanged("Score");
             }
         }
+
+        public Game Game
+        {
+            get;set;
+        }
+
 
         private void raisePropertyChanged(string v)
         {

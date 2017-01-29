@@ -95,15 +95,17 @@ namespace Othello
         private double relativeScore;
         private int totalScore;
         private bool paused;
+        private MainWindow mainWindow;
+        private string winner;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         //private int time;
-        public Game()
+        public Game(MainWindow mainWindow)
         {
             players = new Dictionary<string, Player>();
-            players.Add("white",new Player());
-            players.Add("black", new Player());
+            players.Add("white",new Player(this));
+            players.Add("black", new Player(this));
             board = new Tile[BOARDSIZE, BOARDSIZE];
             Playable = new List<Tile>();
             relativeScore = 0;
@@ -115,6 +117,8 @@ namespace Othello
                 }
             }
             //newGame();
+            this.winner = "";
+            this.mainWindow = mainWindow;
         }
 
         private void showBoard()
@@ -178,9 +182,11 @@ namespace Othello
 
             players["white"].Score = (int)playersObject["white"]["score"];
             players["white"].Time = (int)playersObject["white"]["time"];
+            players["white"].Game = this;
 
             players["black"].Score = (int)playersObject["black"]["score"];
             players["black"].Time = (int)playersObject["black"]["time"];
+            players["black"].Game = this;
 
             isWhiteTurn = (bool) gameObject["isWhiteTurn"];
 
@@ -222,15 +228,16 @@ namespace Othello
             }
 
             ///time = DateTime.Now.Millisecond;
-            BlackPlayer.reset();
-            WhitePlayer.reset();
+            //BlackPlayer.reset();
+            //WhitePlayer.reset();
             showBoard();
             getPlayableTile(isWhiteTurn);
             CurrentPlayerInstance.StartTimer();
             paused = false;
+            winner = "";
         }
 
-        public void pause()
+        public void Pause()
         {
             paused = !paused;
             if (paused)
@@ -242,6 +249,26 @@ namespace Othello
                 CurrentPlayerInstance.StartTimer();
             }
             raisePropertyChanged("Paused");
+        }
+
+        internal void GameOver(string message)
+        {
+            Pause();
+            if (BlackPlayer.Score == WhitePlayer.Score)
+            {
+                winner = null;
+            }
+            else
+            {
+                winner = BlackPlayer.Score > WhitePlayer.Score ? "Black" : "White";
+            }
+           
+            mainWindow.GameOver(message);
+        }
+
+        public string getWinner()
+        {
+            return winner;
         }
 
         public void getPlayableTile(bool isWhiteTurn)
@@ -388,6 +415,10 @@ namespace Othello
 
         public bool playMove(int column, int line, bool isWhite)
         {
+            if (Paused)
+            {
+                return false;
+            }
             getPlayableTile(isWhite);
             if (!isPlayable(column, line, isWhite))
             {
@@ -412,8 +443,9 @@ namespace Othello
             showBoard();
             if(totalScore == 64)
             {
-                CurrentPlayerInstance.StopTimer();
+                //CurrentPlayerInstance.StopTimer();
                 //fin du jeux 
+                GameOver("Tout les pions ont été posés.");
             }
             return true;
         }

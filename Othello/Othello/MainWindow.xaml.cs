@@ -27,7 +27,7 @@ namespace Othello
         public MainWindow()
         {
             InitializeComponent();
-            this.game = new Game();
+            this.game = new Game(this);
             newGameButton.Click += new RoutedEventHandler(NewGameButtonClick);
             saveButton.Click += new RoutedEventHandler(SaveButtonClick);
             loadButton.Click += new RoutedEventHandler(LoadButtonClick);
@@ -95,7 +95,7 @@ namespace Othello
 
         private void PauseButtonClick(object sender, RoutedEventArgs e)
         {
-            game.pause();
+            game.Pause();
             pauseButton.Content = game.Paused ? "Resume" : "Pause"; 
         }
 
@@ -124,71 +124,102 @@ namespace Othello
             game.newGame();
             DrawBoard();
         }
+
+        public void GameOver(string message)
+        {   
+            DrawBoard();
+            message += "\n";
+            if (game.getWinner() != null)
+            {
+                message += $"Le joueur {game.getWinner()} a gagné.\n";
+            }
+            else
+            {
+                message += "Il y a égalité.\n";
+            }
+            message += "Voulez-vous rejouer?";
+            MessageBoxResult result = MessageBox.Show(message, "Fin du jeu", MessageBoxButton.YesNo);
+            
+            if (result == MessageBoxResult.Yes)
+            {
+                NewGame();
+            }
+            else
+            {
+                this.Dispatcher.Invoke(() =>
+                {
+                    Application.Current.Shutdown();
+                });
+            }
+        }
         /// <summary>
         /// Draws the board in the window's canvas.
         /// </summary>
         private void DrawBoard()
         {
-            boardCanvas.Children.Clear();
-            Tile[,] gameBoard = this.game.Board;
-            int min = (int) Math.Min(this.boardCanvas.Width, this.boardCanvas.Height);
-            SolidColorBrush brush = new SolidColorBrush();
-
-            brush.Color = Color.FromRgb(0, 128, 0);
-            this.boardCanvas.Width = min;
-            this.boardCanvas.Height = min;
-
-            this.squareSize = min / 8;
-
-            for(int i = 0; i < 8; i++)
+            this.Dispatcher.Invoke(() =>
             {
-                for(int j = 0; j < 8; j++)
+                //boardCanvas.Children.Clear();
+                Tile[,] gameBoard = this.game.Board;
+                int min = (int)Math.Min(this.boardCanvas.Width, this.boardCanvas.Height);
+                SolidColorBrush brush = new SolidColorBrush();
+
+                brush.Color = Color.FromRgb(0, 128, 0);
+                this.boardCanvas.Width = min;
+                this.boardCanvas.Height = min;
+
+                this.squareSize = min / 8;
+
+                for (int i = 0; i < 8; i++)
                 {
-                    Rectangle rectangle = new Rectangle();
-                    rectangle.Width = this.squareSize;
-                    rectangle.Height = this.squareSize;
-                    rectangle.Fill = Brushes.Green;
-
-                    if ((bool)toggleHelp.IsChecked)
+                    for (int j = 0; j < 8; j++)
                     {
-                        foreach (var tile in game.Playable)
-                        {
+                        Rectangle rectangle = new Rectangle();
+                        rectangle.Width = this.squareSize;
+                        rectangle.Height = this.squareSize;
+                        rectangle.Fill = Brushes.Green;
 
-                            if (tile.X == i && tile.Y == j)
+                        if ((bool)toggleHelp.IsChecked)
+                        {
+                            foreach (var tile in game.Playable)
                             {
-                                rectangle.Fill = Brushes.Gray;
+
+                                if (tile.X == i && tile.Y == j)
+                                {
+                                    rectangle.Fill = Brushes.Gray;
+                                }
                             }
                         }
-                    }
-                    
-                    rectangle.Stroke = Brushes.Black;
-                    this.boardCanvas.Children.Add(rectangle);
-                    Canvas.SetTop(rectangle, i * this.squareSize);
-                    Canvas.SetLeft(rectangle, j * this.squareSize);
-                    if (gameBoard[i, j].Value == 0)
-                    {
-                        Ellipse circle = new Ellipse();
-                        circle.Width = this.squareSize*0.9;
-                        circle.Height = this.squareSize*0.9;
-                        circle.Fill = Brushes.Black;
-                        circle.Stroke = Brushes.Black;
-                        this.boardCanvas.Children.Add(circle);
-                        Canvas.SetTop(circle,  i * this.squareSize - (circle.Width - this.squareSize) / 2 );
-                        Canvas.SetLeft(circle,  j * this.squareSize - (circle.Width - this.squareSize) / 2);
-                    }
-                    if (gameBoard[i, j].Value == 1)
-                    {
-                        Ellipse circle = new Ellipse();
-                        circle.Width = this.squareSize * 0.9;
-                        circle.Height = this.squareSize * 0.9;
-                        circle.Fill = Brushes.White;
-                        circle.Stroke = Brushes.White;
-                        this.boardCanvas.Children.Add(circle);
-                        Canvas.SetTop(circle, i * this.squareSize - (circle.Width - this.squareSize) / 2);
-                        Canvas.SetLeft(circle, j * this.squareSize - (circle.Width - this.squareSize) / 2);
+
+                        rectangle.Stroke = Brushes.Black;
+                        this.boardCanvas.Children.Add(rectangle);
+                        Canvas.SetTop(rectangle, i * this.squareSize);
+                        Canvas.SetLeft(rectangle, j * this.squareSize);
+                        if (gameBoard[i, j].Value == 0)
+                        {
+                            Ellipse circle = new Ellipse();
+                            circle.Width = this.squareSize * 0.9;
+                            circle.Height = this.squareSize * 0.9;
+                            circle.Fill = Brushes.Black;
+                            circle.Stroke = Brushes.Black;
+                            this.boardCanvas.Children.Add(circle);
+                            Canvas.SetTop(circle, i * this.squareSize - (circle.Width - this.squareSize) / 2);
+                            Canvas.SetLeft(circle, j * this.squareSize - (circle.Width - this.squareSize) / 2);
+                        }
+                        if (gameBoard[i, j].Value == 1)
+                        {
+                            Ellipse circle = new Ellipse();
+                            circle.Width = this.squareSize * 0.9;
+                            circle.Height = this.squareSize * 0.9;
+                            circle.Fill = Brushes.White;
+                            circle.Stroke = Brushes.White;
+                            this.boardCanvas.Children.Add(circle);
+                            Canvas.SetTop(circle, i * this.squareSize - (circle.Width - this.squareSize) / 2);
+                            Canvas.SetLeft(circle, j * this.squareSize - (circle.Width - this.squareSize) / 2);
+                        }
                     }
                 }
-            }
+            });
         }
     }
 }
