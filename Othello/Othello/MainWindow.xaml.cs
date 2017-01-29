@@ -129,14 +129,7 @@ namespace Othello
         {   
             DrawBoard();
             message += "\n";
-            if (game.getWinner() != null)
-            {
-                message += $"The {game.getWinner()} player as win the game.\n";
-            }
-            else
-            {
-                message += "There is equality.\n";
-            }
+             message += $"The {game.getWinner()} player as win the game.\n";
             message += "Do you want to play again?";
             MessageBoxResult result = MessageBox.Show(message, "End of game", MessageBoxButton.YesNo);
             
