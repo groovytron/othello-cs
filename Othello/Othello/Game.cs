@@ -52,6 +52,14 @@ namespace Othello
             }
         }
 
+        public Player CurrentPlayerInstance
+        {
+            get
+            {
+                return isWhiteTurn ? WhitePlayer : BlackPlayer;
+            }
+        }
+
         public double RelativeScore
         {
             get { return relativeScore; }
@@ -208,6 +216,7 @@ namespace Othello
             ///time = DateTime.Now.Millisecond;
             showBoard();
             getPlayableTile(isWhiteTurn);
+            CurrentPlayerInstance.StartTimer();
         }
 
         public void pause()
@@ -364,11 +373,12 @@ namespace Othello
             {
                 return false;
             }
+            CurrentPlayerInstance.StopTimer();
 
             board[line, column].Value = isWhite ? 1 : 0;
             flippeTiles(board[line, column], isWhite);
             isWhiteTurn = !isWhiteTurn;
-            
+        
             updateProperties();
             getPlayableTile(isWhiteTurn);
             if (this.Playable.Count == 0)
@@ -376,11 +386,13 @@ namespace Othello
                 isWhiteTurn = !isWhiteTurn;
                 updateProperties();
             }
+            CurrentPlayerInstance.StartTimer();
             getPlayableTile(isWhiteTurn);
             updateScore();
             showBoard();
             if(totalScore == 64)
             {
+                CurrentPlayerInstance.StopTimer();
                 //fin du jeux 
             }
             return true;
