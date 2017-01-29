@@ -254,19 +254,15 @@ namespace Othello
         internal void GameOver(string message)
         {
             Pause();
-            if (BlackPlayer.Score == 64)
-            {
-                winner = "Black";
-            }
-            else if (WhitePlayer.Score == 64)
-            {
-                winner = "White";
-            }
-            else
+            if(WhitePlayer.Time == 0 || BlackPlayer.Time == 0)
             {
                 winner = BlackPlayer.Time <= 0 ? "White" : "Black";
             }
-
+            else
+            {
+                winner = BlackPlayer.Score > WhitePlayer.Score ? "Black" : "White";
+            }
+            
             mainWindow.GameOver(message);
         }
 
@@ -448,7 +444,7 @@ namespace Othello
             if(totalScore == 64)
             {
                 //fin du jeux 
-                GameOver("Tous les pions ont été posés.");
+                GameOver("All the pawn as been place.");
             }
             return true;
         }

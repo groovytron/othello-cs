@@ -49,7 +49,7 @@ namespace Othello
 
         private void NewGameButtonClick(object sender, RoutedEventArgs e)
         {
-            MessageBoxResult result = MessageBox.Show("Êtes vous sûr de vouloir lancer une nouvelle partie?", "Nouvelle partie", MessageBoxButton.OKCancel, MessageBoxImage.Question);
+            MessageBoxResult result = MessageBox.Show("Are you sure you want to start a new game ?", "New Game", MessageBoxButton.OKCancel, MessageBoxImage.Question);
             if (result == MessageBoxResult.OK)
             {
                 NewGame();
@@ -129,7 +129,7 @@ namespace Othello
         {   
             DrawBoard();
             message += "\n";
-             message += $"The {game.getWinner()} player as win the game.\n";
+            message += $"The {game.getWinner()} player as win the game.\n";
             message += "Do you want to play again?";
             MessageBoxResult result = MessageBox.Show(message, "End of game", MessageBoxButton.YesNo);
             
