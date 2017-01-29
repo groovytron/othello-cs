@@ -60,7 +60,7 @@ namespace Othello
         {
             PauseButtonClick(null, null);
             SaveFileDialog openFileDialog = new SaveFileDialog();
-            openFileDialog.Title = "Sauver une partie";
+            openFileDialog.Title = "Save the game";
             openFileDialog.FileName = "game";
             openFileDialog.DefaultExt = ".json";
             openFileDialog.Filter = "Text documents (.json)|*.json";
@@ -78,7 +78,7 @@ namespace Othello
         {
             PauseButtonClick(null, null);
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Title = "Charger une partie";
+            openFileDialog.Title = "Load a game";
             openFileDialog.FileName = "game";
             openFileDialog.DefaultExt = ".json";
             openFileDialog.Filter = "Text documents (.json)|*.json";
@@ -131,14 +131,14 @@ namespace Othello
             message += "\n";
             if (game.getWinner() != null)
             {
-                message += $"Le joueur {game.getWinner()} a gagné.\n";
+                message += $"The {game.getWinner()} player as win the game.\n";
             }
             else
             {
-                message += "Il y a égalité.\n";
+                message += "There is equality.\n";
             }
-            message += "Voulez-vous rejouer?";
-            MessageBoxResult result = MessageBox.Show(message, "Fin du jeu", MessageBoxButton.YesNo);
+            message += "Do you want to play again?";
+            MessageBoxResult result = MessageBox.Show(message, "End of game", MessageBoxButton.YesNo);
             
             if (result == MessageBoxResult.Yes)
             {
