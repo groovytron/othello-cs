@@ -10,9 +10,7 @@ namespace Othello
 {
     class Player : INotifyPropertyChanged
     {
-        //private static readonly int GAME_TIME = 30 * 60;
-
-        private static readonly int GAME_TIME = 2;
+        private static readonly int GAME_TIME = 15 * 60;
         private int time;
         private int score;
         private Timer timer;
