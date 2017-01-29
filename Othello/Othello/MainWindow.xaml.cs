@@ -32,14 +32,20 @@ namespace Othello
             saveButton.Click += new RoutedEventHandler(SaveButtonClick);
             loadButton.Click += new RoutedEventHandler(LoadButtonClick);
             pauseButton.Click += new RoutedEventHandler(PauseButtonClick);
+            toggleHelp.Checked += new RoutedEventHandler(ToggleHelp);
             boardCanvas.MouseLeftButtonDown += new MouseButtonEventHandler(AddPawn);
             this.squareSize = 60;
             this.DataContext = this.game;
-            
+            toggleHelp.IsChecked = true;
             NewGame();
 
         }
         #region event handlers
+
+        private void ToggleHelp(object sender, RoutedEventArgs e)
+        {
+            DrawBoard();
+        }
 
         private void NewGameButtonClick(object sender, RoutedEventArgs e)
         {
@@ -123,6 +129,7 @@ namespace Othello
         /// </summary>
         private void DrawBoard()
         {
+            boardCanvas.Children.Clear();
             Tile[,] gameBoard = this.game.Board;
             int min = (int) Math.Min(this.boardCanvas.Width, this.boardCanvas.Height);
             SolidColorBrush brush = new SolidColorBrush();
@@ -141,12 +148,16 @@ namespace Othello
                     rectangle.Width = this.squareSize;
                     rectangle.Height = this.squareSize;
                     rectangle.Fill = Brushes.Green;
-                    foreach (var tile in game.Playable)
+
+                    if ((bool)toggleHelp.IsChecked)
                     {
-                        
-                        if(tile.X == i && tile.Y == j)
+                        foreach (var tile in game.Playable)
                         {
-                            rectangle.Fill = Brushes.Gray;
+
+                            if (tile.X == i && tile.Y == j)
+                            {
+                                rectangle.Fill = Brushes.Gray;
+                            }
                         }
                     }
                     
