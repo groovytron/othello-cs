@@ -42,7 +42,7 @@ namespace Othello
             if (Time - 1 < 0)
             {
                 timer.Stop();
-                game.GameOver("Le temps d'un joueur est arrivé à terme.");
+                game.GameOver("A player's time has expired.");
             }
             Time = Time - 1;
         }
