@@ -51,13 +51,13 @@ namespace OthelloConsole
         Tuple<char, int> getNextMove(int[,] game, int level, bool whiteTurn);
 
         /// <summary>
-        /// Returns the number of white tiles on the board
+        /// Returns the number of white tiles on the board.
         /// </summary>
         /// <returns></returns>
         int getWhiteScore();
 
         /// <summary>
-        /// Returns the number of black tiles
+        /// Returns the number of black tiles.
         /// </summary>
         /// <returns></returns>
         int getBlackScore();

@@ -60,6 +60,7 @@
             <Button x:Name="saveButton">Save</Button>
             <Button x:Name="loadButton">Load</Button>
             <Button x:Name="pauseButton">Pause</Button>
+            <!--<Button x:Name="undoButton">Undo</Button>-->
             <CheckBox x:Name="toggleHelp">Help</CheckBox>
         </StackPanel>
         <StackPanel

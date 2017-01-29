@@ -24,6 +24,9 @@ namespace Othello
         private Game game;
         private int squareSize;
 
+        /// <summary>
+        /// UI entry point.
+        /// </summary>
         public MainWindow()
         {
             InitializeComponent();
@@ -32,6 +35,7 @@ namespace Othello
             saveButton.Click += new RoutedEventHandler(SaveButtonClick);
             loadButton.Click += new RoutedEventHandler(LoadButtonClick);
             pauseButton.Click += new RoutedEventHandler(PauseButtonClick);
+            //undoButton.Click += new RoutedEventHandler(Undo);
             toggleHelp.Checked += new RoutedEventHandler(ToggleHelp);
             boardCanvas.MouseLeftButtonDown += new MouseButtonEventHandler(AddPawn);
             this.squareSize = 60;
@@ -42,11 +46,38 @@ namespace Othello
         }
         #region event handlers
 
+        /// <summary>
+        /// Revert back to the last turn if it is possible.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Undo(object sender, RoutedEventArgs e)
+        {
+            if(!game.Undo())
+            {
+                MessageBox.Show("You cannot come back", "Undoing impossible", MessageBoxButton.OK);
+            }
+            else
+            {
+                DrawBoard();
+            }
+        }
+
+        /// <summary>
+        /// Enable/Disable playable tiles display.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ToggleHelp(object sender, RoutedEventArgs e)
         {
             DrawBoard();
         }
 
+        /// <summary>
+        /// Create a new game and refresh the interface's canvas and labels.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void NewGameButtonClick(object sender, RoutedEventArgs e)
         {
             MessageBoxResult result = MessageBox.Show("Are you sure you want to start a new game ?", "New Game", MessageBoxButton.OKCancel, MessageBoxImage.Question);
@@ -56,6 +87,12 @@ namespace Othello
             }
         }
 
+        /// <summary>
+        /// Open a SaveFileDialog to allow players to choose a location
+        /// where the game will be saved.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SaveButtonClick(object sender, RoutedEventArgs e)
         {
             PauseButtonClick(null, null);
@@ -70,10 +107,16 @@ namespace Othello
             if (result == true)
             {
                 string filename = openFileDialog.FileName;
-                game.save(filename);
+                game.Save(filename);
             }
         }
 
+        /// <summary>
+        /// Show an OpenFileDialog to let user choose a JSON file
+        /// to load.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void LoadButtonClick(object sender, RoutedEventArgs e)
         {
             PauseButtonClick(null, null);
@@ -88,48 +131,62 @@ namespace Othello
             if (result == true)
             {
                 string filename = openFileDialog.FileName;
-                game.load(filename);
+                game.Load(filename);
                 DrawBoard();
             }
         }
 
+        /// <summary>
+        /// Pause the game. No pawn can be placed and players' timers are stopped.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void PauseButtonClick(object sender, RoutedEventArgs e)
         {
             game.Pause();
             pauseButton.Content = game.Paused ? "Resume" : "Pause"; 
         }
 
+        /// <summary>
+        /// Try to add a pawn to the board follwing the click position
+        /// in the canvas.
+        /// </summary>
         private void AddPawn(object sender, MouseButtonEventArgs e)
         {
             Point pos = e.GetPosition(boardCanvas);
             int column = (int)pos.X / this.squareSize;
             int line = (int) pos.Y / this.squareSize;
-            Console.WriteLine($"Trying to add a pawn at square {column}, {line}");
+            //Console.WriteLine($"Trying to add a pawn at square {column}, {line}");
             if (this.game.playMove(column, line, this.game.CurrentPlayer))
             {
                 this.DrawBoard();
             }
             else
             {
-                Console.WriteLine($"{(this.game.CurrentPlayer ? "White" : "Black")} cannot play.");
+                //Console.WriteLine($"{(this.game.CurrentPlayer ? "White" : "Black")} player cannot play.");
             }
             
         }
         #endregion
+
         /// <summary>
         /// Reset the game.
         /// </summary>
         private void NewGame()
         {
-            game.newGame();
+            game.NewGame();
             DrawBoard();
         }
 
+        /// <summary>
+        /// Called when the game is over.
+        /// </summary>
+        /// <param name="message"></param>
         public void GameOver(string message)
         {   
             DrawBoard();
             message += "\n";
-            message += $"The {game.getWinner()} player won the game.\n";
+            message += $"The {game.GetWinner()} player won the game.\n";
             message += "Do you want to play again?";
             MessageBoxResult result = MessageBox.Show(message, "Game Over", MessageBoxButton.YesNo);
             
@@ -139,20 +196,24 @@ namespace Othello
             }
             else
             {
+                // Used to avoid mutltithreading issue. An InvalidOperationException is thrown if
+                // it is not secured with Dispatcher.Invoke.
                 this.Dispatcher.Invoke(() =>
                 {
                     Application.Current.Shutdown();
                 });
             }
         }
+
         /// <summary>
         /// Draws the board in the window's canvas.
         /// </summary>
         private void DrawBoard()
         {
+            // Used to avoid multithreading issue
             this.Dispatcher.Invoke(() =>
             {
-                //boardCanvas.Children.Clear();
+                boardCanvas.Children.Clear();
                 Tile[,] gameBoard = this.game.Board;
                 int min = (int)Math.Min(this.boardCanvas.Width, this.boardCanvas.Height);
                 SolidColorBrush brush = new SolidColorBrush();

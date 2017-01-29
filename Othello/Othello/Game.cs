@@ -13,6 +13,9 @@ namespace Othello
     class Game : IPlayable, INotifyPropertyChanged
     {
         #region properties
+        /// <summary>
+        /// Game pause state. Game is paused if this value is true.
+        /// </summary>
         public bool Paused {
             get
             {
@@ -20,6 +23,9 @@ namespace Othello
             }
         }
 
+        /// <summary>
+        /// White player instance.
+        /// </summary>
         public Player WhitePlayer
         {
             get
@@ -27,6 +33,10 @@ namespace Othello
                 return players["white"];
             }
         }
+
+        /// <summary>
+        /// Black player instance.
+        /// </summary>
         public Player BlackPlayer
         {
             get
@@ -34,11 +44,19 @@ namespace Othello
                 return players["black"];
             }
         }
+
+        /// <summary>
+        /// 2D array containing the board state (free tiles, black tiles and white tiles).
+        /// </summary>
         public Tile [,] Board
         {
             get { return this.board; }
             set { this.board = value;  }
         }
+
+        /// <summary>
+        /// Is true if it is white player's turn. Is false if it is black player's.
+        /// </summary>
         public bool CurrentPlayer
         {
             get
@@ -46,6 +64,10 @@ namespace Othello
                 return this.isWhiteTurn;
             }
         }
+
+        /// <summary>
+        /// Current player name; "White" ou "Black"
+        /// </summary>
         public string CurrentPlayerName
         {
             get
@@ -59,6 +81,9 @@ namespace Othello
             }
         }
 
+        /// <summary>
+        /// Playing player instance.
+        /// </summary>
         public Player CurrentPlayerInstance
         {
             get
@@ -67,12 +92,18 @@ namespace Othello
             }
         }
 
+        /// <summary>
+        /// Relative score of black player compared to the total pawns placed.
+        /// </summary>
         public double RelativeScore
         {
             get { return relativeScore; }
             set { relativeScore = value; raisePropertyChanged("RelativeScore"); }
         }
 
+        /// <summary>
+        /// Game's interface for AI integration.
+        /// </summary>
         internal List<Tile> Playable
         {
             get
@@ -97,10 +128,10 @@ namespace Othello
         private bool paused;
         private MainWindow mainWindow;
         private string winner;
+        private Stack<Tile[,]> boardStack;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        //private int time;
         public Game(MainWindow mainWindow)
         {
             players = new Dictionary<string, Player>();
@@ -119,9 +150,14 @@ namespace Othello
             //newGame();
             this.winner = "";
             this.mainWindow = mainWindow;
+            boardStack = new Stack<Tile[,]>();
         }
 
-        private void showBoard()
+        #region debugging methods
+        /// <summary>
+        /// Print the actual board's state in the console for debugging.
+        /// </summary>
+        private void ShowBoard()
         {
             for (int i = 0; i < BOARDSIZE; i++)
             {
@@ -134,15 +170,24 @@ namespace Othello
             Console.WriteLine();
         }
 
-        private void showPlayerStatus()
+        /// <summary>
+        /// Print players' values in the console for debugging.
+        /// </summary>
+        private void ShowPlayerStatus()
         {
             foreach (var player in players)
             {
                 Console.WriteLine(player.Value);
             }
         }
+        #endregion
 
-        public void save(string filename)
+        /// <summary>
+        /// Save the actual game state (board, turn, player's scores and time)
+        /// in the specified file. Datas are save in JSON format.
+        /// </summary>
+        /// <param name="filename">File where the game has to be saved.</param>
+        public void Save(string filename)
         {
 
             JObject playersObject = new JObject();
@@ -174,7 +219,11 @@ namespace Othello
             File.WriteAllText(filename, gameObject.ToString());
         }
 
-        public void load(string filename)
+        /// <summary>
+        /// Load a game from a JSON file.
+        /// </summary>
+        /// <param name="filename">File containing the datas to be loaded.</param>
+        public void Load(string filename)
         {
             JObject gameObject = JObject.Parse(File.ReadAllText(filename));
 
@@ -197,11 +246,15 @@ namespace Othello
                 int value = (int)tile["Value"];
                 Board[x,y].Value  = value;
             }
-            getPlayableTile(isWhiteTurn);
+            GetPlayableTile(isWhiteTurn);
         }
 
-        public void newGame()
+        /// <summary>
+        /// Initialise players and board for a new game.
+        /// </summary>
+        public void NewGame()
         {
+            boardStack.Clear();
             foreach (var player in players)
             {
                 player.Value.reset();
@@ -230,13 +283,38 @@ namespace Othello
             ///time = DateTime.Now.Millisecond;
             //BlackPlayer.reset();
             //WhitePlayer.reset();
-            showBoard();
-            getPlayableTile(isWhiteTurn);
+            ShowBoard();
+            GetPlayableTile(isWhiteTurn);
             CurrentPlayerInstance.StartTimer();
             paused = false;
             winner = "";
+
+            //boardStack.Push((Tile[,])Board.Clone());
+            boardStack.Push(CopyBoard());
         }
 
+        /// <summary>
+        /// Used for the board deepcopy and undo methods.
+        /// </summary>
+        /// <returns></returns>
+        private Tile[,] CopyBoard()
+        {
+            Tile[,] copy = new Tile[BOARDSIZE, BOARDSIZE];
+            for (int i = 0; i < BOARDSIZE; i++)
+            {
+                for (int j = 0; j < BOARDSIZE; j++)
+                {
+                    copy[i, j] = new Tile(Board[i, j].X, Board[i, j].Y, Board[i, j].Value, this);
+                }
+            }
+            
+            return copy;
+        }
+
+        /// <summary>
+        /// Stops the timers and disable the possibily to place pawns.
+        /// If game was paused it is resumed and timers are restarted.
+        /// </summary>
         public void Pause()
         {
             paused = !paused;
@@ -251,6 +329,43 @@ namespace Othello
             raisePropertyChanged("Paused");
         }
 
+        /// <summary>
+        /// Undo the last move. (Not working)
+        /// </summary>
+        /// <returns></returns>
+        public bool Undo()
+        {
+            try
+            {
+                Console.WriteLine("Undo");
+                Board = boardStack.Pop();
+                Board = boardStack.Pop();
+                //Tile[,] popped = boardStack.Pop();
+                //for (int i = 0; i < BOARDSIZE; i++)
+                //{
+                //    Console.WriteLine();
+                //    for (int j = 0; j < BOARDSIZE; j++)
+                //    {
+                //        Console.Write($"\t{board[i, j].Value}");
+                //    }
+                //    Console.WriteLine();
+                //}
+                isWhiteTurn = !isWhiteTurn;
+                updateProperties();
+                ShowBoard();
+            }
+            catch (InvalidOperationException e)
+            {
+                return false;
+            }
+            return true;
+            //throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Stop the game and pass the game over message containing the game over reason to the UI.
+        /// </summary>
+        /// <param name="message">Message containing the gameover reason.</param>
         internal void GameOver(string message)
         {
             Pause();
@@ -266,12 +381,20 @@ namespace Othello
             mainWindow.GameOver(message);
         }
 
-        public string getWinner()
+        /// <summary>
+        /// Return the winner's name.
+        /// </summary>
+        /// <returns></returns>
+        public string GetWinner()
         {
             return winner;
         }
 
-        public void getPlayableTile(bool isWhiteTurn)
+        /// <summary>
+        /// Return the playable tiles for the player that has to play.
+        /// </summary>
+        /// <param name="isWhiteTurn"></param>
+        public void GetPlayableTile(bool isWhiteTurn)
         {
             List<Tile> potential = new List<Tile>();
             HashSet<Tile> playableSet = new HashSet<Tile>();
@@ -282,7 +405,7 @@ namespace Othello
             {
                 for (int j = 0; j < BOARDSIZE; j++)
                 {
-                    if (board[i, j].Value == -1 && board[i, j].voisin().Count > 0)
+                    if (board[i, j].Value == -1 && board[i, j].neighbours().Count > 0)
                     {
                         potential.Add(board[i, j]);
                     }
@@ -291,11 +414,11 @@ namespace Othello
 
             foreach (var tile in potential)
             {
-                foreach (var neighbor in tile.voisin())
+                foreach (var neighbor in tile.neighbours())
                 {
                     if(neighbor.Value == enemy)
                     {
-                        if (checkTile(new Tile(tile.X, tile.Y, me, this), neighbor))
+                        if (CheckTile(new Tile(tile.X, tile.Y, me, this), neighbor))
                         {
                             playableSet.Add(tile);
                             break;
@@ -307,7 +430,13 @@ namespace Othello
             //return playable;
         }
         
-        private bool checkTile(Tile tile, Tile neighbor)
+        /// <summary>
+        /// Checks if the tile is playable with a given research direction.
+        /// </summary>
+        /// <param name="tile">Tile that has to be checked.</param>
+        /// <param name="neighbor">Neighbour giving the direction of the research.</param>
+        /// <returns></returns>
+        private bool CheckTile(Tile tile, Tile neighbor)
         {
             int offsetX = tile.X - neighbor.X;
             int offsetY = tile.Y - neighbor.Y;
@@ -334,13 +463,18 @@ namespace Othello
             return false;
         }
 
-        private void flippeTiles(Tile tile, bool isWhiteTurn)
+        /// <summary>
+        /// Flip the tiles following the tile that has been placed.
+        /// </summary>
+        /// <param name="tile">Tile that has been placed.</param>
+        /// <param name="isWhiteTurn">True: player who placed the pawn is white. False: player is black.</param>
+        private void FlipTiles(Tile tile, bool isWhiteTurn)
         {
             Console.WriteLine("flipe");
             int enemy = isWhiteTurn ? 0 : 1;
             int me = isWhiteTurn ? 1 : 0;
 
-            foreach (var neighbor in tile.voisin())
+            foreach (var neighbor in tile.neighbours())
             {
                 List<Tile> hasToBeFlipped = new List<Tile>();
                 Tile neighborTile = neighbor;
@@ -386,21 +520,43 @@ namespace Othello
             }
         }
 
+        /// <summary>
+        /// Return black player score.
+        /// </summary>
+        /// <returns></returns>
         public int getBlackScore()
         {
             return players["black"].Score;
         }
 
+        /// <summary>
+        /// Return white player score.
+        /// </summary>
+        /// <returns></returns>
         public int getWhiteScore()
         {
             return players["white"].Score;
         }
 
+        /// <summary>
+        /// Not implemented yet. This method is for AI integration.
+        /// </summary>
+        /// <param name="game"></param>
+        /// <param name="level"></param>
+        /// <param name="whiteTurn"></param>
+        /// <returns></returns>
         public Tuple<char, int> getNextMove(int[,] game, int level, bool whiteTurn)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Return true if the move is playable or not.
+        /// </summary>
+        /// <param name="column">Move's X position</param>
+        /// <param name="line">Move's Y position</param>
+        /// <param name="isWhite">Player who's trying to place the tile</param>
+        /// <returns></returns>
         public bool isPlayable(int column, int line, bool isWhite)
         {
             int color = isWhite ? 1 : 0;
@@ -413,13 +569,20 @@ namespace Othello
             return false;
         }
 
+        /// <summary>
+        /// Play the move if it is playable and valid.
+        /// </summary>
+        /// <param name="column">Move's X position</param>
+        /// <param name="line">Move's Y position</param>
+        /// <param name="isWhite">Player who's trying to place the tile</param>
+        /// <returns></returns>
         public bool playMove(int column, int line, bool isWhite)
         {
             if (Paused)
             {
                 return false;
             }
-            getPlayableTile(isWhite);
+            GetPlayableTile(isWhite);
             if (!isPlayable(column, line, isWhite))
             {
                 return false;
@@ -427,28 +590,33 @@ namespace Othello
             CurrentPlayerInstance.StopTimer();
 
             board[line, column].Value = isWhite ? 1 : 0;
-            flippeTiles(board[line, column], isWhite);
+            FlipTiles(board[line, column], isWhite);
             isWhiteTurn = !isWhiteTurn;
         
             updateProperties();
-            getPlayableTile(isWhiteTurn);
+            GetPlayableTile(isWhiteTurn);
             if (this.Playable.Count == 0)
             {
                 isWhiteTurn = !isWhiteTurn;
                 updateProperties();
             }
             CurrentPlayerInstance.StartTimer();
-            getPlayableTile(isWhiteTurn);
+            GetPlayableTile(isWhiteTurn);
             updateScore();
-            showBoard();
+            ShowBoard();
             if(totalScore == 64)
             {
                 //fin du jeux 
                 GameOver("All the pawns have been placed.");
             }
+            boardStack.Push(CopyBoard());
+            //boardStack.Push((Tile[,])Board.Clone());
             return true;
         }
 
+        /// <summary>
+        /// Update players' scores.
+        /// </summary>
         private void updateScore()
         {
             int b = 0; 
@@ -470,12 +638,20 @@ namespace Othello
             raisePropertyChanged("RelativeScore");
         }
 
+        /// <summary>
+        /// Update properties and raise event for objects doing data binding
+        /// on the game.
+        /// </summary>
         private void updateProperties()
         {
             CurrentPlayerName = isWhiteTurn ? "White" : "Black";
             raisePropertyChanged("CurrentPlayerName");
         }
 
+        /// <summary>
+        /// Dipatch property update for objects doing data binding on the game.
+        /// </summary>
+        /// <param name="propertyName"></param>
         private void raisePropertyChanged(string propertyName)
         {
             if (PropertyChanged != null)

@@ -8,12 +8,12 @@ namespace Othello
 {
     class Tile
     {
-
         private int x;
         private int y;
         private int value;
         private Game game;
 
+        #region properties
         public int Value 
         {
             get
@@ -42,6 +42,7 @@ namespace Othello
                 return y;
             }
         }
+        #endregion
 
         public Tile(int x, int y, int value, Game game)
         {
@@ -51,7 +52,11 @@ namespace Othello
             this.game = game;
         }
 
-        public List<Tile> voisin()
+        /// <summary>
+        /// Return the list of the tile's neighbour in the game board.
+        /// </summary>
+        /// <returns>List of the tile's neighbours</returns>
+        public List<Tile> neighbours()
         {
             List<Tile> voisin = new List<Tile>();
             
@@ -78,11 +83,10 @@ namespace Othello
 
         public override string ToString()
         {
-            StringBuilder sb = new StringBuilder();
-            sb.Append($"\nPoisition : ({x},{y})");
-            sb.Append($"\nValeur : {value}\n");
-            return sb.ToString();
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.Append($"\nPoisition : ({x},{y})");
+            stringBuilder.Append($"\nValeur : {value}\n");
+            return stringBuilder.ToString();
         }
-
     }
 }
