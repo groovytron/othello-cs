@@ -37,6 +37,7 @@ namespace Othello
             pauseButton.Click += new RoutedEventHandler(PauseButtonClick);
             //undoButton.Click += new RoutedEventHandler(Undo);
             toggleHelp.Checked += new RoutedEventHandler(ToggleHelp);
+            toggleHelp.Unchecked += new RoutedEventHandler(ToggleHelp);
             boardCanvas.MouseLeftButtonDown += new MouseButtonEventHandler(AddPawn);
             this.squareSize = 60;
             this.DataContext = this.game;
