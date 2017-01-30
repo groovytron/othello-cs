@@ -100,7 +100,7 @@ namespace Othello
                 timer.Stop();
                 game.GameOver("A player's time has expired.");
             }
-            Time = Time - 1;
+            Time--;
         }
 
         public override string ToString() {
