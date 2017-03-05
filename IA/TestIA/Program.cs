@@ -184,19 +184,6 @@ namespace ConsoleTestDLLOthello
                         testPlayer1 = boardCompare(refBoard, board1);
                         testPlayer2 = boardCompare(refBoard, board2);
 
-                        Console.WriteLine("Player 1 board");
-                        int[,] temp = player1.GetBoard();
-
-                        for (int i = 0; i < 8; i++)
-                        {
-                            Console.WriteLine();
-                            for (int j = 0; j < 8; j++)
-                            {
-                                Console.Write(temp[i, j] + " ");
-                            }
-                        }
-
-                        Console.ReadLine();
 
                         if (testPlayer1 && testPlayer2)  // we only need to draw one board now
                         {

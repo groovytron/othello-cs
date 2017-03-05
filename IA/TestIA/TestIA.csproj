@@ -41,8 +41,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\dll\IPlayable.dll</HintPath>
     </Reference>
-    <Reference Include="OthelloIA10, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="OthelloIA10">
       <HintPath>..\OthelloIA10\bin\Debug\OthelloIA10.dll</HintPath>
     </Reference>
     <Reference Include="OthelloIA12, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
